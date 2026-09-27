@@ -34,16 +34,17 @@ function tile(text, opts) {
 function bigWord(word, cls) { return el("div", { class: "bigword " + (cls || ""), text: word }); }
 function emptyMsg(msg) { return el("p", { class: "empty", text: msg }); }
 
-/* Sound buttons: the word split into its graphemes, in letter order. A split
- * digraph's two letters are drawn as a linked pair. */
+/* Dots and dashes: the word split into its sounds, in letter order, as on
+ * RWI's Green Word cards — a dot under a one-letter sound, a dash under a
+ * Special Friend. A split digraph's two letters are drawn as a linked pair. */
 function soundButtons(word, cls) {
   const chunks = displayChunks(word, gpcsOf(word));
   return el("div", { class: "sbtns " + (cls || "") }, chunks.map((c) =>
-    el("span", { class: "sb" + (c.split ? " split" : "") + (c.gpc == null ? " plain" : ""), text: c.text })
+    el("span", { class: "sb" + (c.split ? " split" : c.text.length > 1 ? " multi" : "") + (c.gpc == null ? " plain" : ""), text: c.text })
   ));
 }
 
-/* A tricky word with its tricky bit highlighted. */
+/* A Red Word with its tricky bit highlighted in red. */
 function trickyWordEl(word, cls) {
   const tp = TRICKY_PARTS[word];
   if (!tp) return bigWord(word, cls);
@@ -62,17 +63,17 @@ function notEnough(msg) {
 
 const flashcards = {
   label: "Flashcards", icon: "✦",
-  tabs: [{ id: "sounds", label: "Sounds" }, { id: "tricky", label: "Tricky Words" }],
+  tabs: [{ id: "sounds", label: "Sounds" }, { id: "tricky", label: "Red Words" }],
   directions: {
     sounds: [
-      "Pick a sound from the tiles. Ask him what sound it makes — the <em>sound</em> (“mmm”), not the letter name (“em”).",
-      "Words using that sound appear above. Click one to put it on his screen. Turn on <em>sound buttons</em> if he needs to see the word split up; turn them off once he can blend it whole.",
+      "Pick a Speed Sound from the tiles. Ask him what sound it makes — the pure sound (“mmm”, not “muh”), never the letter name (“em”). Set 2 and Set 3 tiles show the card's phrase: say it together, “ay: may I play”.",
+      "Words using that sound appear above — Green Words. Click one to put it on his screen and have him Fred Talk it (m-a-t) and then say the word. Turn on <em>dots and dashes</em> if he needs to see the sounds marked; turn them off once he can read it without Fred Talk.",
       "Tap ✓ if he read it, ✗ if not. The tile changes colour so you can both see how the set is going, and the record is kept with the date.",
     ],
     tricky: [
-      "Most of a tricky word is regular. The <strong>orange</strong> part is the bit he can't sound out yet — everything else he can.",
-      "Have him read the regular sounds, tell him the tricky bit, then read the whole word together. Don't make him guess the tricky bit, and don't have him memorise the whole word as a shape — the point is he still reads the parts he can.",
-      "When he stalls on a tricky word inside a story, the same thing applies: give him the tricky bit, not the whole word.",
+      "Red Words are the ones he can't Fred Talk yet — “you can't Fred a Red”. Most of a Red Word is still regular: the <strong>red</strong> part is the tricky bit, and everything else he can read.",
+      "Point out the tricky bit, say the word, and have him say it back. Don't make him guess the tricky bit — the point is to read it on sight next time, knowing which letters are the odd ones out.",
+      "When he stalls on a Red Word inside a story, just tell him the word; the red colour on your screen shows you which ones those are.",
     ],
   },
   render(host, mode) {
@@ -110,7 +111,7 @@ const flashcards = {
           el("label", { class: "toggle" }, [
             el("input", { type: "checkbox", checked: s.fc.buttons ? "checked" : null,
               onchange: (e) => saveSub("fc", { buttons: e.target.checked }) }),
-            el("span", { text: "Show sound buttons on his screen" }),
+            el("span", { text: "Show dots and dashes on his screen" }),
           ]),
         ]));
       }
@@ -133,12 +134,13 @@ const flashcards = {
       return;
     }
     if (!words.length) {
-      // Little Wandle's first tricky word is "is" in Reception Week 3, so
-      // Levels 1–2 have none — say so rather than point at an empty list.
+      // RWI brings in Red Words with the Ditties, once all of Set 1 is
+      // known, so Levels 1–5 have none — say so rather than point at an
+      // empty list.
       const next = UNITS.find((u) => u.n > s.level && u.tricky.length);
       host.appendChild(notEnough(next
-        ? `No tricky words yet at Level ${s.level} — the first one (${next.tricky.join(", ")}) arrives at Level ${next.n}, ${next.term} ${next.label}. Every word he meets so far can be sounded out.`
-        : "No tricky words at this level."));
+        ? `No Red Words yet at Level ${s.level} — the first ones (${next.tricky.join(", ")}) arrive at Level ${next.n}, with the Ditties at the end of Set 1. Every word he meets so far can be Fred Talked.`
+        : "No Red Words at this level."));
       return;
     }
     const panel = el("div", { class: "panel" });
@@ -147,7 +149,7 @@ const flashcards = {
       const tp = TRICKY_PARTS[sel];
       if (tp) panel.appendChild(el("p", { class: "tp-note" }, [el("strong", { text: "The tricky bit: " }), tp.note]));
       panel.appendChild(assessRow("tricky", sel, "He read it"));
-    } else panel.appendChild(emptyMsg("Pick a tricky word below."));
+    } else panel.appendChild(emptyMsg("Pick a Red Word below."));
     host.appendChild(panel);
     host.appendChild(el("div", { class: "tilewrap" }, words.map((w) => tile(w, {
       verdict: verdictOf("tricky", w), active: sel === w,
@@ -162,9 +164,9 @@ const flashcards = {
 /* ------------------------------------------------------------------ */
 
 const READS = [
-  { id: "decode", label: "Read 1 · sounding out", hint: "He read it, with help where needed." },
-  { id: "prosody", label: "Read 2 · with expression", hint: "Read again, sounding like talking." },
-  { id: "comprehend", label: "Read 3 · talked about it", hint: "What happened? Why? What did he think?" },
+  { id: "decode", label: "Read 1 · every word", hint: "Every word read accurately, Fred Talking where needed." },
+  { id: "prosody", label: "Read 2 · more at a glance", hint: "Again, with more words read straight off." },
+  { id: "comprehend", label: "Read 3 · storyteller voice", hint: "Fluent, with expression — then talk about it." },
 ];
 
 const stories = {
@@ -176,9 +178,9 @@ const stories = {
     ],
     read: [
       "Let him read to you. If he's shy, take turns a sentence at a time, or read a page and have him read it back.",
-      "Words in <strong>bold blue</strong> are tricky words. Let him have a go at the regular sounds; if he stalls, give him the tricky bit (the flashcards tab shows which bit that is), not the whole word.",
+      "Words in <strong>bold red</strong> are Red Words — just tell him those if he stalls. Everything else is a Green Word: he can Fred Talk it (sound it out), then say the word.",
       "Click any word to highlight it on his screen if he loses his place.",
-      "The same book, three times over a week or so: once to sound it out, once to read it with expression, once to talk about it. Tick each read off below — that's the record.",
+      "RWI's storybook lessons read each book three times: every word accurately, then more words at a glance, then the whole story fluently in a “storyteller voice”. Tick each read off below — that's the record.",
     ],
   },
   render(host, mode) {
@@ -343,7 +345,7 @@ const threeinarow = {
   render(host, mode) {
     const s = loadState();
     const words = gameWords(s.level, 9, s.tir.round);
-    if (words.length < 9) { host.appendChild(notEnough(`Not enough words yet — 3 in a Row starts at Level 2, once he has i, n, m and d as well.`)); return; }
+    if (words.length < 9) { host.appendChild(notEnough("Not enough words yet at this level for a 3 in a Row board — move up a level.")); return; }
     const marks = s.tir.marks || [];
     let win = null;
     for (const [a, b, c] of LINES) if (marks[a] && marks[a] === marks[b] && marks[a] === marks[c]) win = { who: marks[a], line: [a, b, c] };
@@ -375,7 +377,7 @@ const mysteryword = {
   directions: [
     "Pick a secret word — he can't see it, only the blanks.",
     "He guesses letters out loud; you click them. Letters in the word fill themselves in, wrong ones cost a star.",
-    "Five stars, then the word is revealed. Whatever happens, finish by having him read the whole word with its sound buttons — that's the reading practice, not the guessing.",
+    "Five stars, then the word is revealed. Whatever happens, finish by having him Fred Talk the whole word with its dots and dashes — that's the reading practice, not the guessing.",
   ],
   render(host, mode) {
     const s = loadState();
@@ -405,7 +407,7 @@ const mysteryword = {
     }
     if (!secret) {
       const choices = gameWords(s.level, 8, 5000 + (s.myst.seed || 0), 3);
-      if (choices.length < 4) { host.appendChild(notEnough("Not enough words yet — Mystery Word starts at Level 2.")); return; }
+      if (choices.length < 4) { host.appendChild(notEnough("Not enough words yet at this level for Mystery Word — move up a level.")); return; }
       host.appendChild(el("div", { class: "panel" }, [
         el("p", { class: "hint", text: "Pick a secret word (he can't see this list on his screen):" }),
         el("div", { class: "chips" }, choices.map((w) => el("button", { class: "chip", text: w, onclick: () => saveSub("myst", { word: w, guessed: [] }) }))),
@@ -433,7 +435,7 @@ const wordwheel = {
   label: "Word Wheel", icon: "◉",
   directions: [
     "The ending stays put and the beginning changes, so he reads a whole family of words that rhyme.",
-    "Turn the wheel, then blend the new word <em>sound by sound</em> — the sound buttons underneath show the split: c · a · t, not c · at. Keep digraphs like sh or ai together as one sound.",
+    "Turn the wheel, then Fred Talk the new word <em>sound by sound</em> — the dots and dashes underneath show the split: c · a · t, not c · at. Keep Special Friends like sh or ay together as one sound.",
     "Good for building speed once he's secure, because only one sound changes each time.",
   ],
   render(host, mode) {

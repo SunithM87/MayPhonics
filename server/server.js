@@ -12,7 +12,7 @@
  * The document has two parts, matching assets/core.js:
  *   liveState — what's on screen right now (level, band, activity, and
  *               each activity's own state: story page, game board, …)
- *   progress  — the lasting record: sounds and tricky words assessed,
+ *   progress  — the lasting record: sounds and Red Words assessed,
  *               books read (three reads each)
  *
  * Protocol:
@@ -40,7 +40,7 @@ const PUBLIC_DIR = path.resolve(process.env.PUBLIC_DIR || "/app/public");
 const STATE_FILE = path.resolve(process.env.STATE_FILE || "/app/data/state.json");
 
 const DEFAULT_DOC = {
-  liveState: { level: 1, band: "pink", activity: "flashcards", tab: "sounds", showDirections: true, updatedAt: 0 },
+  liveState: { level: 1, band: "red", activity: "flashcards", tab: "sounds", showDirections: true, updatedAt: 0 },
   progress: { sounds: {}, tricky: {}, read: {}, updatedAt: 0 },
 };
 

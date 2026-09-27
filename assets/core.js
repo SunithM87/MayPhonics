@@ -23,7 +23,7 @@ const ROLE = document.body.classList.contains("student") ? "student" : "coach";
 
 const DEFAULT_STATE = {
   level: 1,
-  band: "pink",
+  band: "red",
   activity: "flashcards",
   tab: "sounds",
   showDirections: true,
@@ -103,7 +103,8 @@ function verdictWhen(kind, id) {
   return e && typeof e === "object" ? e.t || 0 : 0;
 }
 
-/* Three reads per book — Little Wandle's decoding / prosody / comprehension. */
+/* Three reads per book — RWI's every word / at a glance / storyteller voice.
+ * The ids are the older decode / prosody / comprehend so saved records carry over. */
 function readsOf(storyId) {
   const r = loadProgress().read[storyId];
   if (!r) return { decode: 0, prosody: 0, comprehend: 0 };

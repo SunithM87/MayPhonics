@@ -11,8 +11,8 @@
 #   app.previous/   the one before, kept in case of a bad update
 set -u
 
-REPO="${REPO:-SunithM87/Phonics}"
-BRANCH="${BRANCH:-claude/gifted-feynman-6q1506}"
+REPO="${REPO:-SunithM87/MayPhonics}"
+BRANCH="${BRANCH:-claude/reading-den-app-migration-3torha}"
 DATA="${DATA:-/app/data}"
 APP="$DATA/app"
 WORK="$DATA/.incoming"

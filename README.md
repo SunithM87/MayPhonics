@@ -1,9 +1,17 @@
-# The Reading Den 📖
+# The Reading Den 📖 — Read Write Inc. edition
 
 A two-screen reading session for one grown-up and one child at home: a
 **reader portal** with the controls, and a **child's screen** with just the
-story or game on it. Built around the Little Wandle Letters and Sounds
-Revised progression, because that's the scheme the school uses.
+story or game on it. Built around **Read Write Inc. Phonics** (Ruth Miskin /
+Oxford University Press): Speed Sounds Sets 1–3 in RWI's teaching order,
+Red Words, Fred Talk, dots and dashes, and the RWI storybook colours from
+Red Ditty to Grey.
+
+This is a copy of [SunithM87/Phonics](https://github.com/SunithM87/Phonics),
+which follows Little Wandle, reworked for a school that uses RWI. The code
+is the same; the progression, the Red Word lists, the book bands and the
+wording are RWI's. It runs as its own container on its own port, so both
+editions can live on the same NAS.
 
 No build step, no accounts, no internet needed once it's on the machine.
 
@@ -16,12 +24,12 @@ school reading volunteer runs:
 
 | | |
 |---|---|
-| **Flashcards** | Sound tiles and tricky words. Pick a sound, send an example word to his screen, optionally with *sound buttons* under it (the word split into its graphemes), mark ✓ / ✗. Tiles keep their colour and the date, so the record builds up over sessions, and a strip above the tiles tells you what to practise next. Tricky words show their **tricky bit** in orange with a one-line note ("the e says /uh/"). |
-| **Stories** | Thirteen illustrated decodable books — see below. |
+| **Flashcards** | Speed Sound tiles and Red Words. Pick a sound — Set 2 and Set 3 tiles carry the card's phrase ("ay: may I play") — send a Green Word to his screen, optionally with RWI-style *dots and dashes* under it (a dot per one-letter sound, a dash under a Special Friend), mark ✓ / ✗. Tiles keep their colour and the date, so the record builds up over sessions, and a strip above the tiles tells you what to practise next. Red Words show their **tricky bit** in red with a one-line note ("the e says /uh/"). |
+| **Stories** | Thirteen illustrated decodable books, spread across the eight RWI colours — see below. |
 | **Word Sort** | Numbered words to sort into coloured bins by the sound they contain. He says "number four goes in the red box". |
 | **3 in a Row** | Noughts and crosses on a 3×3 grid of words. Read the word to claim the square. You against him — click once for ✕, twice for ○. |
-| **Mystery Word** | You pick a secret word, he guesses letters. Wrong guesses cost a star. Five stars and it's revealed. Solved or not, it ends with the whole word and its sound buttons — the reading is the point, not the guessing. |
-| **Word Wheel** | A rime in the middle, onsets round the outside — turn it and he reads a whole rhyming family: cat, hat, mat, pat, rat, sat. Every word shows its sound buttons. |
+| **Mystery Word** | You pick a secret word, he guesses letters. Wrong guesses cost a star. Five stars and it's revealed. Solved or not, it ends with the whole word and its dots and dashes — the reading is the point, not the guessing. |
+| **Word Wheel** | A rime in the middle, onsets round the outside — turn it and he Fred Talks a whole rhyming family: sat, pat, mat. Every word shows its dots and dashes. |
 | **Whiteboard** | Type sounds or words, drag them around. Good for pulling a word apart and pushing it back together. |
 
 Plus **Send a Sticker** — pops a big emoji on his screen. Worth saving for
@@ -33,23 +41,32 @@ Thirteen proper little books, not practice sentences: a title, a cover, a
 cast, and a beginning/middle/end over five pages. Pip the pug turns up in
 two of them, which for a four-year-old is most of the appeal.
 
-Every book carries an exact **Activity Level** — the highest teaching unit
-any of its words needs — and its card says so. That's checked, not eyeballed:
+Every book carries an exact **Activity Level** — the highest step any of
+its words needs — and its card says so. That's checked, not eyeballed:
 every word in every book is in a hand-reviewed grapheme bank
 (`assets/data/words.js`), and `tools/check-content.js` fails if a book uses a
 grapheme, a suffix or an adjacent-consonant pattern taught later than its
 declared level.
 
-Tricky words are marked in the data and shown in blue on the page, so you
-know at a glance which words to give him the tricky bit of rather than make
-him sound out. The marking is level-aware: *and* is tricky in a Phase 2 book
-(he hasn't met adjacent consonants) but plain in a Phase 4 one, and the
-checker enforces both directions. Click any word on your screen and it
+The books started life in the Little Wandle edition and were re-levelled
+for RWI, which moves a lot: *rain*, *boat* and *cow* are Phase 3 in Little
+Wandle but Set 3 in RWI (ai, oa and "brown cow" ow), while *snow* moves the
+other way. A few lines were reworded so every colour has at least one book
+(the fox's hen now *sleeps* rather than naps, Roy's boat is a green toy
+ship). They are this app's own books, **not** the RWI storybooks — don't
+expect the titles in his book bag.
+
+Red Words are marked in the data and shown in **red** on the page, as RWI
+prints them, so you know at a glance which words to just tell him. The
+marking is level-aware: *paint* is red in a Purple book (ai isn't a Speed
+Sound yet) but a plain Green Word once Set 3's ai arrives, and the checker
+enforces both directions. Words RWI keeps listing as red after their sounds
+arrive (*her*, *saw*, *all*) stay red. Click any word on your screen and it
 highlights on his.
 
-Each book has three tick-boxes — **sounding out**, **with expression**,
-**talked about it** — because the scheme's model is the same book read
-three times over a week, and one "mark as read" flag doesn't record that.
+Each book has three tick-boxes, matching RWI's three reads of every
+storybook — **every word accurately**, **more words at a glance**, and
+**storyteller voice** — because one "mark as read" flag doesn't record that.
 
 Pictures are composed from an original SVG kit (`assets/data/art.js`) — one
 shared cast and prop set, so characters stay recognisable page to page.
@@ -67,7 +84,7 @@ For two *devices* (your laptop and his tablet), you need the sync server:
 ```
 cd server && npm install        # once — pulls one dependency, ws
 cd .. && PUBLIC_DIR="$PWD" STATE_FILE="$PWD/deploy/data/state.json" node server/server.js
-# then open http://<your-machine>:8000 on both devices
+# then open http://<your-machine>:8000 on both devices (PORT=8001 to match the NAS)
 ```
 
 Or run it properly on a NAS — see below.
@@ -102,15 +119,19 @@ of the app from GitHub** and serves that, so updating means restarting it
 it downloaded.
 
 Nothing needs copying to the NAS. The only folder it uses is
-**`/volume2/appdata/Reading Den/deploy/data`**, which holds his progress
+**`/volume2/appdata/Reading Den RWI/data`**, which holds his progress
 (`state.json`) plus the downloaded copy of the app.
+
+It is deliberately separate from the Little Wandle edition: the container
+is called **`reading-den-rwi`**, it listens on port **8001**, and it has its
+own data folder, so the two never share progress or restart each other.
 
 1. **App Center → Docker → Install** (current DXP / DH4300 Plus models
    support it; the entry-level DH2300 doesn't).
 2. **Docker → Project → Create.** Paste in the whole of
    [`deploy/docker-compose.yaml`](deploy/docker-compose.yaml) and deploy it.
    It uses the standard `node:20-alpine` image, so there's nothing to build.
-3. Open `http://<nas-ip>:8000` on any device in the house.
+3. Open `http://<nas-ip>:8001` on any device in the house.
 
 To keep the data somewhere else, change the one `source:` path in the
 compose file. It has to be an absolute path, because the UGREEN app keeps
@@ -123,55 +144,40 @@ its own copy of the file. The port is the other thing you might change.
   on the open internet. For access away from home use Tailscale (below),
   which keeps it private to your own devices.
 - **His progress lives in
-  `/volume2/appdata/Reading Den/deploy/data/state.json`.** It's the record of
-  which sounds and tricky words he's got, and which books he's read. Worth
+  `/volume2/appdata/Reading Den RWI/data/state.json`.** It's the record of
+  which Speed Sounds and Red Words he's got, and which books he's read. Worth
   including in whatever you already back up.
 - **The container runs whatever is on the GitHub branch.** That's what
   makes it update itself, and it means anyone who can push to the repo
   controls what your NAS serves. Right now that's only you. The container
   can only see its own data folder, not the rest of the NAS.
+- **The repo has to be public for this to work.** The container downloads
+  the app from GitHub without a token. If MayPhonics is private, the first
+  start fails with `HTTP 404` in the container log; make the repo public, or
+  run it from a local copy instead (see *Running it*).
 
 ---
 
 ## Updating
 
 **Restart the container.** In the UGREEN Docker app: *Containers →
-reading-den → Restart* (or stop and start the project). As it starts it
+reading-den-rwi → Restart* (or stop and start the project). As it starts it
 downloads the latest version from GitHub. Give it about ten seconds, then
 refresh both screens. His progress is never touched.
 
-To check which version is running, open `http://<nas-ip>:8000/api/health`.
+To check which version is running, open `http://<nas-ip>:8001/api/health`.
 The `version` field is the commit it's serving.
 
 From a terminal, this does the same restart and waits until the new
 version answers:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/SunithM87/Phonics/claude/gifted-feynman-6q1506/deploy/update.sh | sudo sh
+curl -fsSL https://raw.githubusercontent.com/SunithM87/MayPhonics/claude/reading-den-app-migration-3torha/deploy/update.sh | sudo sh
 ```
 
-**If you set it up before the container updated itself**, your project
-still has the old compose file, and restarting it won't update anything.
-Switch it over once. The terminal command above does this for you: it
-spots the old container, writes the new compose file (over the UGREEN
-app's own copy too, keeping a `.before-self-update` backup), keeps the
-same data folder and redeploys. Or, in the UGREEN app:
-
-1. In the UGREEN Docker app, open the **reading-den** project and edit
-   its compose file.
-2. Replace all of it with the current
-   [`deploy/docker-compose.yaml`](deploy/docker-compose.yaml) and save and
-   redeploy. It points at the same data folder, so his progress carries
-   over.
-3. If the app won't let you edit the project, delete the old project and
-   create a new one from the same file. If it offers to delete volumes or
-   data, say **no**.
-
-After that, restarting is all an update ever needs. The old app files in
-`/volume2/appdata/Reading Den` aren't used any more, and only
-`deploy/data/` matters. The branch it follows is set in two places in the
-compose file (`BRANCH=` and the URL). Change both if you ever switch, for
-example to `main`.
+The branch it follows is set in two places in the compose file
+(`BRANCH=` and the URL). Change both if you ever switch, for example to
+`main`.
 
 If a page still looks stale after a refresh, hard-refresh it
 (Ctrl/Cmd+Shift+R). Occasionally a tablet browser holds on to old
@@ -182,7 +188,7 @@ JavaScript regardless of the no-cache header.
 The app needs nothing special for this. Every URL it uses is relative to
 the page (the sync socket is built from `window.location`), and the server
 doesn't check the hostname, so it works the same whether you reach it as
-`192.168.1.170:8000`, a Tailscale `100.x.y.z:8000` address, or a MagicDNS
+`192.168.1.170:8001`, a Tailscale `100.x.y.z:8001` address, or a MagicDNS
 name. If it works at home and not away, the problem is the route to the
 NAS, not the app. Check these in order:
 
@@ -190,16 +196,16 @@ NAS, not the app. Check these in order:
    exists on your home Wi-Fi. Away from home, use the NAS's Tailscale IP
    (the `100.…` address in the Tailscale app or admin console, or
    `tailscale ip -4` on the NAS) or its MagicDNS name:
-   `http://100.x.y.z:8000`. The one exception: if the NAS advertises your
+   `http://100.x.y.z:8001`. The one exception: if the NAS advertises your
    home subnet as a Tailscale route *and* you've approved it in the admin
    console, the home IP works too.
 2. **Tailscale has to be on at both ends.** The phone or laptop needs the
    Tailscale VPN switched on (not just the app installed). The NAS needs to
    show as *Connected* in the admin console.
 3. **The NAS firewall.** If UGOS's firewall is on, it may only allow your
-   home subnet. Allow port 8000, or the Tailscale range `100.64.0.0/10`.
+   home subnet. Allow port 8001, or the Tailscale range `100.64.0.0/10`.
 4. **Test from the NAS itself** over SSH:
-   `curl -s http://$(tailscale ip -4):8000/api/health`. If that answers,
+   `curl -s http://$(tailscale ip -4):8001/api/health`. If that answers,
    the container and firewall are fine and the problem is on the device
    you're connecting from. If the `tailscale` command isn't found, Tailscale
    is running as a UGOS app or container rather than on the NAS itself. In
@@ -210,8 +216,8 @@ works too: the page switches the sync socket to `wss://` automatically.
 
 ### Moving it to a different folder
 
-Only the data folder matters. Stop the container, move `deploy/data/` (or
-the whole `Reading Den` folder) to its new home, change the `source:` path
+Only the data folder matters. Stop the container, move the `data/` folder
+(or the whole `Reading Den RWI` folder) to its new home, change the `source:` path
 in the project's compose file to match, and deploy it again. His progress
 comes along inside `state.json`.
 
@@ -222,43 +228,58 @@ comes along inside `state.json`.
 Two separate level systems, which is how reading platforms actually do it,
 because they move independently:
 
-**Activity Level 1–21** drives flashcards and games. Each level is one of
-Little Wandle's own teaching units, in the published order: the Reception
-weeks (four new sounds each — Level 1 is `s a t p`, Level 2 `i n m d`, and
-so on through Phases 2 and 3), then the Phase 4 adjacent-consonant sets,
-then the Year 1 Phase 5 sets. The picker groups them by Phase and shows the
-sounds and tricky words each one adds. Move it up whenever school does; the
-tricky-word lists match the official ones exactly (22 / 9 / 18 / 34 for
-Phases 2–5).
+**Activity Level 1–18** drives flashcards and games. The sounds come in
+Read Write Inc.'s published teaching order:
+
+| Levels | What | RWI checkpoint it ends on |
+|---|---|---|
+| 1–6 | **Set 1**: m a s d t · i n p g o · c k u b f e · l h sh r j · v y w th z · ch qu x ng nk | Level 3 = the first 16 single-letter sounds; Level 6 = all of Set 1, and the Ditties (with the first Red Words) |
+| 7 | **Word Time 1.7**: ck ff ll ss zz and the other double letters; 4- and 5-sound words (stop, jump) and -s endings (cats) | Red Ditty books |
+| 8–11 | **Set 2**: ay ee igh · ow(blow the snow) oo(zoo) oo(book) · ar or air · ir ou oy | Level 9 = the first six Set 2 sounds (the Purple check); Level 11 = all of Set 2 (the Pink check) |
+| 12–17 | **Set 3**: ea oi a-e · i-e o-e u-e · aw are ur er · ow(brown cow) ai oa ew · e(he) ire ear · ure tion tious cious | Level 13 = the first six Set 3 sounds (the Yellow check); Level 17 = all of Set 3 (the Blue check) |
+| 18 | **Complex Speed Sounds**: the other spellings the books and games use — ie ue oe au ey wh ph e-e, y as in happy and fly, soft c and g, ea as in bread | Grey |
+
+The *order* is RWI's. The *steps* are this app's: RWI teaches roughly a
+sound a day and regroups children every half term, so there's no official
+"Set 2 part 3". The steps are cut so that each RWI assessment checkpoint
+lands on a level boundary. The terms in the picker (Reception Autumn 1 and
+so on) are a typical pace, not a rule. Move it up whenever school does.
+
+**Red Words** are RWI's own lists, taken from the progression of Red Words
+through the storybooks, and brought in at the level where that colour of
+book starts: the Red Ditty words (I, the, put, no, of, my, he) at Level 6,
+then Green at 8, Purple at 9, Pink at 10, Orange at 12, Yellow at 13, Blue
+at 14 and Grey at 18. Each word appears once, where it first turns up. A
+handful are only red *for now* — *paint* needs Set 3's ai, *he*, *me*, *we*,
+*be* and *she* need Set 3's "e: he" — and stop being marked red in stories
+once those sounds arrive. The flashcard tiles keep them either way.
 
 Everything the level gates is gated mechanically. Every word the app can
 show is in the grapheme bank with its sounds spelled out
 (`ship: ["sh","i","p"]`, `cake: ["c","a-e","k"]`), and a word is only
-offered at a level if every one of its graphemes has been taught, any `-s`
-ending has been taught (Level 10), and any two consonants side by side
-(`st`, `mp`, `tr`) have been taught (Phase 4, Levels 15–16). So Level 1 is
-genuinely just `s a t p` words — seven of them — and the games that need
-more than that say so and wait for Level 2.
+offered at a level if every one of its sounds has been taught, and — for two
+consonants side by side (`st`, `mp`, `tr`) or an `-s` ending — Word Time 1.7
+(Level 7) has been reached. So Level 1 is genuinely just `m a s d t` words.
 
-Some tricky words stop being tricky: *and*, *her*, *when*, *out*, *my* are
-all decodable once their sounds arrive. They stay on the tricky-word tiles
-(school keeps teaching them), but the stories stop marking them once he can
-read them.
+**Story Level** is the RWI storybook colour — **Red Ditty, Green, Purple,
+Pink, Orange, Yellow, Blue, Grey** — the same colour as his RWI group at
+school. Each colour is pinned to a maximum Activity Level (7 / 8 / 9 / 11 /
+12 / 13 / 17 / 18), following what RWI says children know at each colour:
+all of Set 1 before Red Ditty, Set 2 starting alongside Green and Purple,
+all of Set 2 by Orange, the first six Set 3 sounds by the end of Yellow, all
+of Set 3 by the end of Blue. The chip picker lists every book in the colour
+with its exact level, and a book card turns amber when its level is above
+his current Activity Level.
 
-**Story Level** is a book-band colour — Pink, Red, Yellow, Blue, Orange —
-and each band is pinned to a maximum Activity Level (10 / 14 / 16 / 18 / 21).
-The chip picker lists every book in the band with its exact level, and a
-book card turns amber when its level is above his current Activity Level.
-
-> **An honest caveat on the band colours.** Book bands are near-universal in
-> UK schools, but they are **not** a Little Wandle thing. Little Wandle
-> labels books by *Phase and Set*, and Collins — who publish the official
-> Little Wandle readers — print "Phase 4 Set 2" on the back, not a colour.
-> Every phase→colour mapping out there is a school-made chart, and the ones
-> I checked disagree with each other by about a term. Pink≈Phase 2 and
-> Red≈Phase 3 are solid; above that it gets fuzzy (Yellow is only Phase 4
-> Set 1; Blue covers Phase 4 Set 2 *and* early Phase 5). Treat the colour as
-> a rough guide and go by what comes home in his book bag.
+> **An honest caveat on the colours.** RWI's colours are *not* the UK book
+> bands most other schemes use — RWI Pink and book-band Pink are different
+> things, and schools say so on their own parent sheets. RWI also doesn't
+> publish a one-line "these exact sounds, no others" rule per colour: the
+> Green, Purple and Pink books are read *while* Set 2 is being learnt, and
+> Orange to Blue while Set 3 is. So the per-colour ceilings above are my
+> reading of RWI's own descriptions, and the eight colours share only
+> thirteen books between them, several with one book each. Go by his group
+> at school.
 
 ---
 
@@ -286,14 +307,14 @@ index.html, coach.html, play.html   landing / reader portal / child's screen
 assets/core.js                      state + WebSocket sync
 assets/activities.js                all seven activities (coach + student modes)
 assets/coach.js, play.js            the two page shells
-assets/data/phonics.js              the 21 units, tricky-word parts, sound examples, sorts, wheels
+assets/data/phonics.js              the 18 levels, Red Word lists and tricky parts, sound examples, sorts, wheels
 assets/data/words.js                the grapheme bank: every word the app can show, with its sounds
 assets/data/stories.js              the thirteen books
 assets/data/art.js                  SVG scene kit for the illustrations
 assets/style.css                    everything visual
 assets/fonts/                       Andika (SIL OFL)
 server/server.js                    static server + sync (http + ws, nothing else)
-tools/check-content.js              validates every word, sort, wheel, story and tricky mark against its level
+tools/check-content.js              validates every word, sort, wheel, story and Red Word mark against its level
 tools/check-determinism.js          guards that both screens compute the same thing
 tools/segment.js                    helper for adding words to the bank (draft segmentation, then review by hand)
 deploy/docker-compose.yaml           NAS deployment (self-updating; paste into the UGREEN Docker app)
@@ -306,13 +327,13 @@ deploy/update.sh                     terminal shortcut: restart the container an
 ## Checks
 
 ```
-node tools/check-content.js        every word, sort, wheel and story readable at its declared level; tricky marks right
+node tools/check-content.js        every word, sort, wheel and story readable at its declared level; Red Word marks right
 node tools/check-determinism.js    game boards identical on both screens
 ```
 
 The first one replaced an earlier checker that segmented words by scanning
-for letter strings — which happily passed *cake*, *train* and *egg* at Phase
-2 because it could find `c`, `a`, `k`, `e` in them. Segmenting is now done
+for letter strings — which happily passed *cake*, *train* and *egg* at the
+very start because it could find `c`, `a`, `k`, `e` in them. Segmenting is now done
 once, by hand, into `assets/data/words.js`, and the checker only asks
 whether each recorded sound has been taught yet. Adding a word means adding
 its sounds; `node tools/segment.js <word>` drafts that for you, but the
@@ -337,9 +358,20 @@ to be a pure function of the shared state, and that check enforces it.
   the standard version of that activity); there's no Storyboard at all.
 - **It's not a copy.** Not of Chapter One — I had screenshots of the layout,
   never the code, and all the stories, art, words and code here are original.
-  Not affiliated with or endorsed by Little Wandle / Wandle Learning Trust
-  either; it just follows their published progression.
-- **The grapheme bank is hand-reviewed, not infallible.** 500-odd words,
+  Not affiliated with or endorsed by Read Write Inc., Ruth Miskin Literacy
+  or Oxford University Press either; it follows RWI's published sound order
+  and Red Word lists, and borrows RWI's words for things (Fred Talk, Special
+  Friends, Green and Red Words) so they match what he hears at school. None
+  of RWI's own books, pictures or Fred the Frog are in here.
+- **Where the RWI facts come from.** No official RWI teacher handbook was
+  used — they're sold to schools. The sound order and Set 2 / Set 3 phrases
+  come from school parent guides that reproduce RWI's; the per-colour Red
+  Word lists from a school's "Red Words matched to RWI books" sheet; the
+  colour-by-colour expectations from Oxford University Press's RWI book
+  pages and a school's RWI progression map. Where those were silent (which
+  exact sounds a Purple book may use), the app makes a reasoned call and
+  says so above.
+- **The grapheme bank is hand-reviewed, not infallible.** 550-odd words,
   each with its sounds spelled out. If you spot one that's wrong, fixing the
   entry in `assets/data/words.js` fixes it everywhere and the checker will
   tell you if the change puts a story out of level.

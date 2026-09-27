@@ -1,4 +1,8 @@
-# The Reading Den on the UGREEN NAS.
+# The Reading Den (Read Write Inc. edition) on the UGREEN NAS.
+#
+# It is named reading-den-rwi, on port 8001, with its own data folder, so it
+# can run alongside the Little Wandle edition (reading-den, port 8000)
+# without the two touching each other.
 #
 # Self-updating: every time the container starts it downloads the latest
 # version from GitHub and serves that. To update, restart the container
@@ -14,24 +18,24 @@
 # `sudo docker compose up -d` next to it) and it does the rest.
 
 services:
-  reading-den:
+  reading-den-rwi:
     image: node:20-alpine
-    container_name: reading-den
+    container_name: reading-den-rwi
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - PORT=8000
       # Which branch to run. If you change it, change it in the URL below too.
-      - BRANCH=claude/gifted-feynman-6q1506
+      - BRANCH=claude/reading-den-app-migration-3torha
     volumes:
       - type: bind
-        source: /volume2/appdata/Reading Den/deploy/data
+        source: /volume2/appdata/Reading Den RWI/data
         target: /app/data
     # Fetch the start-up script, then run it; it fetches the app itself. If
     # GitHub is unreachable, the last copy of both is used.
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        node -e "fetch(process.argv[1]).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).then(t=>require('fs').writeFileSync('/app/data/start.sh',t)).catch(e=>{console.error('[boot] could not fetch start.sh:',e.message);process.exit(1)})" "https://raw.githubusercontent.com/SunithM87/Phonics/claude/gifted-feynman-6q1506/deploy/container-start.sh" || echo "[boot] using the last start.sh"
+        node -e "fetch(process.argv[1]).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).then(t=>require('fs').writeFileSync('/app/data/start.sh',t)).catch(e=>{console.error('[boot] could not fetch start.sh:',e.message);process.exit(1)})" "https://raw.githubusercontent.com/SunithM87/MayPhonics/claude/reading-den-app-migration-3torha/deploy/container-start.sh" || echo "[boot] using the last start.sh"
         exec sh /app/data/start.sh

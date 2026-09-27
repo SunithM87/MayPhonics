@@ -36,6 +36,7 @@
   --good-soft: #e4f3ea;
   --bad: #cf4b45;
   --bad-soft: #fbe8e7;
+  --red-word: #c0322c;   /* Red Words, as RWI prints them */
   --focus: #6c4fd6;
 
   --radius: 14px;
@@ -260,19 +261,28 @@ a { color: inherit; }
 
 /* sound buttons */
 .sbtns { display: inline-flex; gap: 6px; align-items: flex-end; flex-wrap: wrap; justify-content: center; font-family: var(--read); }
-.sb { font-weight: 700; font-size: 1.5rem; padding: 2px 8px 4px; border-bottom: 5px solid var(--plum); line-height: 1.1; color: var(--ink); }
-.sb.split { border-bottom-style: dashed; color: var(--bad); }
-.sb.plain { border-bottom-color: transparent; }
-.sbtns.big .sb { font-size: clamp(1.6rem, 5vw, 3rem); padding: 4px 14px 8px; border-bottom-width: 7px; }
+/* Dots and dashes, the way RWI's Green Word cards mark sounds: a dot under
+ * a one-letter sound, a dash under a Special Friend, a dashed pair for a
+ * split vowel like a-e. */
+.sb { position: relative; font-weight: 700; font-size: 1.5rem; padding: 2px 8px 16px; line-height: 1.1; color: var(--ink); }
+.sb::after { content: ""; position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%); width: 9px; height: 9px; border-radius: 50%; background: var(--plum); }
+.sb.multi::after { width: calc(100% - 14px); height: 5px; border-radius: 3px; }
+.sb.split { color: var(--bad); }
+.sb.split::after { width: calc(100% - 10px); height: 0; border-radius: 0; background: none; border-bottom: 4px dashed var(--bad); }
+.sb.plain::after { display: none; }
+.sbtns.big .sb { font-size: clamp(1.6rem, 5vw, 3rem); padding: 4px 14px 24px; }
+.sbtns.big .sb::after { width: 14px; height: 14px; bottom: 5px; }
+.sbtns.big .sb.multi::after { width: calc(100% - 22px); height: 7px; }
+.sbtns.big .sb.split::after { width: calc(100% - 16px); height: 0; border-bottom-width: 6px; }
 .sbrow { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 4px 0 6px; }
 .toggle { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--ink-soft); cursor: pointer; }
 .toggle input { width: 18px; height: 18px; accent-color: var(--plum); }
 
 /* tricky parts */
 .bigword.tp .tp-ok { color: var(--ink); }
-.bigword.tp .tp-hard { color: var(--amber-deep); text-decoration: underline; text-decoration-thickness: 5px; text-underline-offset: 8px; }
+.bigword.tp .tp-hard { color: var(--red-word); text-decoration: underline; text-decoration-thickness: 5px; text-underline-offset: 8px; }
 .tp-note { text-align: center; color: var(--ink-soft); margin: 0 0 8px; }
-.tp-note strong { color: var(--amber-deep); }
+.tp-note strong { color: var(--red-word); }
 
 /* practise-next strip */
 .practise { margin: 14px 22px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: .88rem; color: var(--ink-soft); }
@@ -296,7 +306,7 @@ a { color: inherit; }
 
 /* level picker groups */
 .levelgroup { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; margin: 10px 0 -2px; }
-.lo-tricky { font-size: .82rem; color: #2b63b8; }
+.lo-tricky { font-size: .82rem; color: var(--red-word); }
 
 /* student pill */
 .stu-pill { font-size: .72rem; color: var(--ink-soft); opacity: .6; }
@@ -338,7 +348,7 @@ a { color: inherit; }
 .w { border-radius: 5px; padding: 0 2px; }
 .w.clickable { cursor: pointer; }
 .w.clickable:hover { background: #f0edf9; }
-.w.tricky { color: #2b63b8; font-weight: 700; }
+.w.tricky { color: var(--red-word); font-weight: 700; }
 .w.hl { background: var(--amber); }
 
 .pager { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 16px; }

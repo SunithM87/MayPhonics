@@ -4,164 +4,183 @@
  * and games unlock whole-level), and a separate colour-banded STORY LEVEL
  * for the book library (see stories.js).
  *
- * What's on the scale is Little Wandle Letters and Sounds Revised. Each
- * level is one of Little Wandle's own teaching units — a Reception week
- * (four new sounds) or a Year 1 set — taken from the published programme
- * overview and pacing document. So Level 1 is s a t p, Level 2 adds
- * i n m d, and so on; twenty-one units from Reception Autumn 1 to the end
- * of Phase 5. That granularity is what makes flashcards useful in the
- * first weeks: in week two he sees eight tiles, not twenty.
+ * What's on the scale is Read Write Inc. Phonics (Ruth Miskin / Oxford
+ * University Press). The ORDER is RWI's own: Set 1 Speed Sounds in the
+ * published teaching order (m a s d t i n p g o c k u b f e l h sh r j v y
+ * w th z ch qu x ng nk), then the 12 Set 2 sounds, then the Set 3 sounds,
+ * in the order RWI's Speed Sounds charts list them. The GROUPING into levels
+ * of three to six sounds is this app's, not RWI's — RWI teaches a sound a day
+ * and regroups children every half term, so there is no official "week 3".
+ * The group boundaries are placed where RWI's own assessment steps are:
+ * Level 3 ends on the first 16 single-letter sounds (Set 1 Group A), Level 6
+ * completes Set 1, Level 9 the first six Set 2 sounds (the Purple exit
+ * check), Level 11 all of Set 2, Level 13 the first six Set 3 sounds (the
+ * Yellow exit check), Level 17 all of Set 3.
  *
  * Every word the app shows him has an explicit grapheme breakdown in
  * words.js. tools/check-content.js validates ALL content here — sound
  * examples, sorts, wheels, game pools and every story word — against the
  * sounds taught by the level it appears at, and fails otherwise.
  *
- * Not affiliated with Little Wandle / Wandle Learning Trust or Chapter One.
- * His school's own pacing always wins over this file.
+ * Not affiliated with Ruth Miskin Literacy, Oxford University Press or
+ * Chapter One. His school's own groupings always win over this file.
  */
 
 const UNITS = [
-  { n: 1,  phase: 2, term: "Reception · Autumn 1", label: "Week 1", sounds: ["s", "a", "t", "p"], tricky: [] },
-  { n: 2,  phase: 2, term: "Reception · Autumn 1", label: "Week 2", sounds: ["i", "n", "m", "d"], tricky: [] },
-  { n: 3,  phase: 2, term: "Reception · Autumn 1", label: "Week 3", sounds: ["g", "o", "c", "k"], tricky: ["is"] },
-  { n: 4,  phase: 2, term: "Reception · Autumn 1", label: "Week 4", sounds: ["ck", "e", "u", "r"], tricky: ["I"] },
-  { n: 5,  phase: 2, term: "Reception · Autumn 1", label: "Week 5", sounds: ["h", "b", "f", "l"], tricky: ["the"] },
-  { n: 6,  phase: 2, term: "Reception · Autumn 2", label: "Week 1", sounds: ["ff", "ll", "ss", "j"], tricky: ["put", "pull", "full", "as"] },
-  { n: 7,  phase: 2, term: "Reception · Autumn 2", label: "Week 2", sounds: ["v", "w", "x", "y"], tricky: ["and", "has", "his", "her"] },
-  { n: 8,  phase: 2, term: "Reception · Autumn 2", label: "Week 3", sounds: ["z", "zz", "qu", "ch"], tricky: ["go", "no", "to", "into"] },
-  { n: 9,  phase: 2, term: "Reception · Autumn 2", label: "Week 4", sounds: ["sh", "th", "ng", "nk"], tricky: ["she", "push", "he", "of"] },
-  { n: 10, phase: 2, term: "Reception · Autumn 2", label: "Week 5", sounds: [], note: "Words ending in -s: hats, sits, bags", tricky: ["we", "me", "be"] },
-  { n: 11, phase: 3, term: "Reception · Spring 1", label: "Week 1", sounds: ["ai", "ee", "igh", "oa"], tricky: [] },
-  { n: 12, phase: 3, term: "Reception · Spring 1", label: "Week 2", sounds: ["oo", "oo(book)", "ar", "or"], tricky: ["was", "you", "they"] },
-  { n: 13, phase: 3, term: "Reception · Spring 1", label: "Week 3", sounds: ["ur", "ow", "oi", "ear"], tricky: ["my", "by", "all"] },
-  { n: 14, phase: 3, term: "Reception · Spring 1", label: "Week 4", sounds: ["air", "er", "dd", "mm", "tt", "bb", "rr", "gg", "pp"], note: "Double letters make one sound", tricky: ["are", "sure", "pure"] },
-  { n: 15, phase: 4, term: "Reception · Summer", label: "Set 1", sounds: [], note: "Two consonants together, short vowels: stop, jump, hand", tricky: ["said", "so", "have", "like", "some", "come", "love", "do", "were"] },
-  { n: 16, phase: 4, term: "Reception · Summer", label: "Set 2", sounds: [], note: "Two consonants together, long vowels: train, sleep, float", tricky: ["here", "little", "says", "there", "when", "what", "one", "out", "today"] },
-  { n: 17, phase: 5, term: "Year 1 · Autumn", label: "Set 1", sounds: ["ay", "ou", "ie", "ea"], tricky: ["their", "people", "oh", "your"] },
-  { n: 18, phase: 5, term: "Year 1 · Autumn", label: "Set 2", sounds: ["oy", "ir", "ue", "aw"], tricky: ["Mr", "Mrs", "Ms", "ask"] },
-  { n: 19, phase: 5, term: "Year 1 · Autumn", label: "Set 3", sounds: ["wh", "ph", "ew", "oe", "au", "ey"], tricky: ["our", "could", "would", "should", "house", "mouse", "water", "want", "any", "many", "again"] },
-  { n: 20, phase: 5, term: "Year 1 · Spring", label: "Set 4", sounds: ["a-e", "e-e", "i-e", "o-e", "u-e"], note: "Split digraphs", tricky: ["who", "whole", "where", "two", "school"] },
-  { n: 21, phase: 5, term: "Year 1 · Spring", label: "Set 5", sounds: ["c(soft)", "g(soft)", "y(ee)", "y(igh)", "ea(bread)", "ow(snow)"], note: "Letters that make more than one sound", tricky: ["call", "different", "thought", "through", "friend", "work", "once", "laugh", "because", "eye"] },
+  { n: 1,  set: "Set 1", term: "Reception · Autumn 1", label: "Speed Sounds 1", sounds: ["m", "a", "s", "d", "t"], tricky: [] },
+  { n: 2,  set: "Set 1", term: "Reception · Autumn 1", label: "Speed Sounds 2", sounds: ["i", "n", "p", "g", "o"], tricky: [] },
+  { n: 3,  set: "Set 1", term: "Reception · Autumn 1", label: "Speed Sounds 3", sounds: ["c", "k", "u", "b", "f", "e"], note: "The first 16 single-letter sounds", tricky: [] },
+  { n: 4,  set: "Set 1", term: "Reception · Autumn 1", label: "Speed Sounds 4", sounds: ["l", "h", "sh", "r", "j"], note: "sh is the first Special Friend — two letters, one sound", tricky: [] },
+  { n: 5,  set: "Set 1", term: "Reception · Autumn 2", label: "Speed Sounds 5", sounds: ["v", "y", "w", "th", "z"], tricky: [] },
+  { n: 6,  set: "Set 1", term: "Reception · Autumn 2", label: "Speed Sounds 6", sounds: ["ch", "qu", "x", "ng", "nk"], note: "All of Set 1. Ditties start here, and with them the first Red Words", tricky: ["I", "the", "put", "no", "of", "my", "he"] },
+  { n: 7,  set: "Set 1", term: "Reception · Autumn 2", label: "Special Friends & longer words", sounds: ["ck", "ff", "ll", "ss", "zz", "dd", "mm", "tt", "bb", "rr", "gg", "pp"], note: "Word Time 1.7: double letters, and 4- and 5-sound words — stop, jump, cats", tricky: [] },
+  { n: 8,  set: "Set 2", term: "Reception · Spring", label: "Set 2 · part 1", sounds: ["ay", "ee", "igh"], tricky: ["your", "said", "you", "be"] },
+  { n: 9,  set: "Set 2", term: "Reception · Spring", label: "Set 2 · part 2", sounds: ["ow(snow)", "oo", "oo(book)"], note: "The first six Set 2 sounds", tricky: ["to", "me", "go", "baby", "are", "paint"] },
+  { n: 10, set: "Set 2", term: "Reception · Summer", label: "Set 2 · part 3", sounds: ["ar", "or", "air"], tricky: ["all", "like", "I've", "want", "we", "her", "she", "washing", "some", "so"] },
+  { n: 11, set: "Set 2", term: "Reception · Summer", label: "Set 2 · part 4", sounds: ["ir", "ou", "oy"], note: "All 12 Set 2 sounds", tricky: [] },
+  { n: 12, set: "Set 3", term: "Year 1 · Autumn", label: "Set 3 · part 1", sounds: ["ea", "oi", "a-e"], tricky: ["what", "they", "do", "old", "was", "call"] },
+  { n: 13, set: "Set 3", term: "Year 1 · Autumn", label: "Set 3 · part 2", sounds: ["i-e", "o-e", "u-e"], note: "The first six Set 3 sounds", tricky: ["saw", "watch", "school", "small", "their", "who", "tall", "brother", "were", "I'm", "there", "fall", "any", "where", "wall"] },
+  { n: 14, set: "Set 3", term: "Year 1 · Spring", label: "Set 3 · part 3", sounds: ["aw", "are", "ur", "er"], tricky: ["does", "one", "other", "two", "could", "ball", "would", "water", "wash", "anyone", "over", "wasn't", "through", "once", "son", "whole", "people"] },
+  { n: 15, set: "Set 3", term: "Year 1 · Spring", label: "Set 3 · part 4", sounds: ["ow", "ai", "oa", "ew"], tricky: [] },
+  { n: 16, set: "Set 3", term: "Year 1 · Summer", label: "Set 3 · part 5", sounds: ["e(he)", "ire", "ear"], tricky: [] },
+  { n: 17, set: "Set 3", term: "Year 1 · Summer", label: "Set 3 · part 6", sounds: ["ure", "tion", "tious", "cious"], note: "All of Set 3", tricky: [] },
+  { n: 18, set: "Complex Speed Sounds", term: "Year 2", label: "More ways to write the sounds", sounds: ["ie", "ue", "oe", "au", "ey", "wh", "ph", "e-e", "y(ee)", "y(igh)", "c(soft)", "g(soft)", "ea(bread)"], note: "The rest of the Complex Speed Sounds chart that the stories and games use", tricky: ["should", "come", "many", "mother", "father", "here", "buy", "bought", "great", "above", "someone", "another", "walk", "caught", "worse", "everyone", "love", "wear"] },
 ];
 
 const MAX_LEVEL = UNITS.length;
-const ADJACENT_SHORT_LEVEL = 15; // Phase 4 Set 1
-const ADJACENT_LONG_LEVEL = 16;  // Phase 4 Set 2
-const SUFFIX_S_LEVEL = 10;       // Phase 2 Autumn 2 Week 5
+/* Word Time 1.7 — once all of Set 1 is known, words get longer: two
+ * consonant sounds side by side (stop, jump) and a plural or verb -s
+ * (cats, sits). RWI does both at the same step. */
+const ADJACENT_LEVEL = 7;
+const SUFFIX_S_LEVEL = 7;
 
 /* Friendly labels for graphemes whose id carries a disambiguator. */
 const GPC_LABEL = {
-  "oo(book)": "oo", "c(soft)": "c", "g(soft)": "g", "y(ee)": "y", "y(igh)": "y",
-  "ea(bread)": "ea", "ow(snow)": "ow", "a-e": "a_e", "e-e": "e_e", "i-e": "i_e", "o-e": "o_e", "u-e": "u_e",
+  "oo(book)": "oo", "c(soft)": "c", "g(soft)": "g", "y(ee)": "y", "y(igh)": "y", "e(he)": "e",
+  "ea(bread)": "ea", "ow(snow)": "ow", "a-e": "a-e", "e-e": "e-e", "i-e": "i-e", "o-e": "o-e", "u-e": "u-e",
 };
+/* The Set 2 and Set 3 cards each come with a short phrase ("may I play").
+ * These are RWI's phrases, as schools send them home; they are the fastest
+ * way to tell the two oo's and the two ow's apart. */
 const GPC_NOTE = {
-  "oo": "as in moon", "oo(book)": "as in book", "c(soft)": "soft, as in city", "g(soft)": "soft, as in gem",
-  "y(ee)": "as in happy", "y(igh)": "as in fly", "ea": "as in eat", "ea(bread)": "as in bread",
-  "ow": "as in cow", "ow(snow)": "as in snow",
+  ay: "may I play", ee: "what can you see", igh: "fly high", "ow(snow)": "blow the snow",
+  oo: "poo at the zoo", "oo(book)": "look at a book", ar: "start the car", or: "shut the door",
+  air: "that's not fair", ir: "whirl and twirl", ou: "shout it out", oy: "toy for a boy",
+  ea: "cup of tea", oi: "spoil the boy", "a-e": "make a cake", "i-e": "nice smile", "o-e": "phone home",
+  "u-e": "huge brute", aw: "yawn at dawn", are: "care and share", ur: "nurse with a purse",
+  er: "a better letter", ow: "brown cow", ai: "snail in the rain", oa: "goat in a boat",
+  ew: "chew the stew", "e(he)": "he, me, we", ire: "fire fire", ear: "hear with your ear", ure: "sure it's pure",
+  tion: "as in action", tious: "as in ambitious", cious: "as in delicious",
+  "c(soft)": "soft, as in city", "g(soft)": "soft, as in gem", "y(ee)": "as in happy", "y(igh)": "as in fly",
+  "ea(bread)": "as in bread", ie: "as in pie", ue: "as in blue", oe: "as in toe", au: "as in author",
+  ey: "as in key", wh: "as in when", ph: "as in dolphin", "e-e": "as in these",
 };
 function gpcLabel(g) { return GPC_LABEL[g] || g; }
 function gpcNote(g) { return GPC_NOTE[g] || ""; }
 
-/* Vowel graphemes — used to detect adjacent consonants (Phase 4). */
+/* Vowel graphemes — used to detect adjacent consonants (Word Time 1.7). */
 const VOWEL_GPCS = new Set([
   "a", "e", "i", "o", "u", "ai", "ee", "igh", "oa", "oo", "oo(book)", "ar", "or", "ur", "ow", "oi", "ear", "air", "er",
-  "ay", "ou", "ie", "ea", "oy", "ir", "ue", "aw", "ew", "oe", "au", "ey",
+  "ay", "ou", "ie", "ea", "oy", "ir", "ue", "aw", "ew", "oe", "au", "ey", "are", "ire", "ure", "e(he)",
   "a-e", "e-e", "i-e", "o-e", "u-e", "y(ee)", "y(igh)", "ea(bread)", "ow(snow)",
 ]);
-const LONG_VOWEL_GPCS = new Set([...VOWEL_GPCS].filter((g) => !["a", "e", "i", "o", "u"].includes(g)));
 
 /* ------------------------------------------------------------------ */
-/* Tricky words: which part is the tricky bit                          */
+/* Red Words: which part is the tricky bit                             */
 /* ------------------------------------------------------------------ */
-/* Little Wandle does not teach tricky words as wholes to memorise: most
- * of a tricky word is regular, and children are taught to read the regular
- * sounds and be TOLD the tricky bit. Each entry lists the word's parts with
- * a flag for the tricky one(s), plus a one-line note for the grown-up. */
+/* RWI calls the words children can't sound out yet Red Words ("you can't
+ * Fred a Red"). The lists by level are the words RWI's storybooks use at
+ * each colour, first appearance only: Ditty words at Level 6, Green 8,
+ * Purple 9, Pink 10, Orange 12, Yellow 13, Blue 14, Grey 18. Some are only
+ * red for now: "paint" needs ai (Set 3), "saw" needs aw.
+ *
+ * Most of a Red Word is still regular, so each entry lists the word's parts
+ * with a flag for the tricky one(s), plus a one-line note for the grown-up.
+ * The internal key stays "tricky" so saved progress carries over. */
 const TRICKY_PARTS = {
-  is: { parts: [["i", 0], ["s", 1]], note: "the s says /z/" },
   I: { parts: [["I", 1]], note: "says its letter name" },
   the: { parts: [["th", 0], ["e", 1]], note: "the e says /uh/" },
-  put: { parts: [["p", 0], ["u", 1], ["t", 0]], note: "the u says /oo/" },
-  pull: { parts: [["p", 0], ["u", 1], ["ll", 0]], note: "the u says /oo/" },
-  full: { parts: [["f", 0], ["u", 1], ["ll", 0]], note: "the u says /oo/" },
-  as: { parts: [["a", 0], ["s", 1]], note: "the s says /z/" },
-  and: { parts: [["a", 0], ["nd", 1]], note: "every letter is regular — the tricky bit is n and d running together, which isn't taught yet. Say the end for him." },
-  has: { parts: [["h", 0], ["a", 0], ["s", 1]], note: "the s says /z/" },
-  his: { parts: [["h", 0], ["i", 0], ["s", 1]], note: "the s says /z/" },
-  her: { parts: [["h", 0], ["er", 1]], note: "er isn't taught yet — it says /ur/" },
-  go: { parts: [["g", 0], ["o", 1]], note: "the o says /oa/" },
+  put: { parts: [["p", 0], ["u", 1], ["t", 0]], note: "the u says /oo/, as in look" },
   no: { parts: [["n", 0], ["o", 1]], note: "the o says /oa/" },
-  to: { parts: [["t", 0], ["o", 1]], note: "the o says /oo/" },
-  into: { parts: [["i", 0], ["n", 0], ["t", 0], ["o", 1]], note: "the o says /oo/" },
-  she: { parts: [["sh", 0], ["e", 1]], note: "the e says /ee/" },
-  push: { parts: [["p", 0], ["u", 1], ["sh", 0]], note: "the u says /oo/" },
-  he: { parts: [["h", 0], ["e", 1]], note: "the e says /ee/" },
   of: { parts: [["o", 0], ["f", 1]], note: "the f says /v/" },
-  we: { parts: [["w", 0], ["e", 1]], note: "the e says /ee/" },
-  me: { parts: [["m", 0], ["e", 1]], note: "the e says /ee/" },
-  be: { parts: [["b", 0], ["e", 1]], note: "the e says /ee/" },
-  was: { parts: [["w", 0], ["a", 1], ["s", 1]], note: "the a says /o/ and the s says /z/" },
-  you: { parts: [["y", 0], ["ou", 1]], note: "ou says /oo/" },
-  they: { parts: [["th", 0], ["ey", 1]], note: "ey says /ai/" },
   my: { parts: [["m", 0], ["y", 1]], note: "the y says /igh/" },
-  by: { parts: [["b", 0], ["y", 1]], note: "the y says /igh/" },
-  all: { parts: [["a", 1], ["ll", 0]], note: "the a says /or/" },
-  are: { parts: [["are", 1]], note: "the whole word says /ar/" },
-  sure: { parts: [["s", 1], ["ure", 1]], note: "the s says /sh/" },
-  pure: { parts: [["p", 0], ["ure", 1]], note: "ure says /yoor/" },
-  said: { parts: [["s", 0], ["ai", 1], ["d", 0]], note: "ai says /e/" },
-  so: { parts: [["s", 0], ["o", 1]], note: "the o says /oa/" },
-  have: { parts: [["h", 0], ["a", 0], ["v", 0], ["e", 1]], note: "the e is silent" },
-  like: { parts: [["l", 0], ["i", 1], ["k", 0], ["e", 1]], note: "the i and e work together to say /igh/" },
-  some: { parts: [["s", 0], ["o", 1], ["m", 0], ["e", 1]], note: "the o says /u/, the e is silent" },
-  come: { parts: [["c", 0], ["o", 1], ["m", 0], ["e", 1]], note: "the o says /u/, the e is silent" },
-  love: { parts: [["l", 0], ["o", 1], ["v", 0], ["e", 1]], note: "the o says /u/, the e is silent" },
-  do: { parts: [["d", 0], ["o", 1]], note: "the o says /oo/" },
-  were: { parts: [["w", 0], ["ere", 1]], note: "ere says /ur/" },
-  here: { parts: [["h", 0], ["ere", 1]], note: "ere says /ear/" },
-  little: { parts: [["l", 0], ["i", 0], ["tt", 0], ["le", 1]], note: "le says /l/" },
-  says: { parts: [["s", 0], ["ay", 1], ["s", 1]], note: "ay says /e/, the s says /z/" },
-  there: { parts: [["th", 0], ["ere", 1]], note: "ere says /air/" },
-  when: { parts: [["wh", 1], ["e", 0], ["n", 0]], note: "wh says /w/" },
-  what: { parts: [["wh", 1], ["a", 1], ["t", 0]], note: "wh says /w/, the a says /o/" },
-  one: { parts: [["one", 1]], note: "the whole word says /wun/" },
-  out: { parts: [["ou", 1], ["t", 0]], note: "ou says /ow/" },
-  today: { parts: [["t", 0], ["o", 1], ["d", 0], ["ay", 1]], note: "the o says /u/, ay says /ai/" },
-  their: { parts: [["th", 0], ["eir", 1]], note: "eir says /air/" },
-  people: { parts: [["p", 0], ["eo", 1], ["p", 0], ["le", 1]], note: "eo says /ee/, le says /l/" },
-  oh: { parts: [["o", 1], ["h", 1]], note: "says /oa/" },
+  he: { parts: [["h", 0], ["e", 1]], note: "the e says /ee/ — Set 3 teaches it as “e: he”, and then it's green" },
   your: { parts: [["y", 0], ["our", 1]], note: "our says /or/" },
-  Mr: { parts: [["Mr", 1]], note: "short for Mister" },
-  Mrs: { parts: [["Mrs", 1]], note: "short for Missus" },
-  Ms: { parts: [["Ms", 1]], note: "says /miz/" },
-  ask: { parts: [["a", 1], ["s", 0], ["k", 0]], note: "the a says /ar/ in most accents" },
-  our: { parts: [["our", 1]], note: "the whole word says /ow-er/" },
-  could: { parts: [["c", 0], ["oul", 1], ["d", 0]], note: "oul says /oo/" },
-  would: { parts: [["w", 0], ["oul", 1], ["d", 0]], note: "oul says /oo/" },
-  should: { parts: [["sh", 0], ["oul", 1], ["d", 0]], note: "oul says /oo/" },
-  house: { parts: [["h", 0], ["ou", 0], ["se", 1]], note: "se says /s/" },
-  mouse: { parts: [["m", 0], ["ou", 0], ["se", 1]], note: "se says /s/" },
-  water: { parts: [["w", 0], ["a", 1], ["t", 0], ["er", 0]], note: "the a says /or/" },
+  said: { parts: [["s", 0], ["ai", 1], ["d", 0]], note: "ai says /e/" },
+  you: { parts: [["y", 0], ["ou", 1]], note: "ou says /oo/ here, not /ow/" },
+  be: { parts: [["b", 0], ["e", 1]], note: "the e says /ee/" },
+  to: { parts: [["t", 0], ["o", 1]], note: "the o says /oo/" },
+  me: { parts: [["m", 0], ["e", 1]], note: "the e says /ee/" },
+  go: { parts: [["g", 0], ["o", 1]], note: "the o says /oa/" },
+  baby: { parts: [["b", 0], ["a", 1], ["b", 0], ["y", 1]], note: "the a says /ay/, the y says /ee/" },
+  are: { parts: [["are", 1]], note: "the whole word says /ar/" },
+  paint: { parts: [["p", 0], ["ai", 1], ["n", 0], ["t", 0]], note: "ai isn't a Speed Sound yet (it's Set 3, “snail in the rain”) — it says /ay/" },
+  all: { parts: [["a", 1], ["ll", 0]], note: "the a says /or/" },
+  like: { parts: [["l", 0], ["i", 1], ["k", 0], ["e", 1]], note: "the i and e work together to say /igh/ (Set 3's i-e, “nice smile”)" },
+  "I've": { parts: [["I", 1], ["'ve", 1]], note: "short for I have — says /ive/" },
   want: { parts: [["w", 0], ["a", 1], ["n", 0], ["t", 0]], note: "the a says /o/" },
-  any: { parts: [["a", 1], ["n", 0], ["y", 1]], note: "the a says /e/, the y says /ee/" },
-  many: { parts: [["m", 0], ["a", 1], ["n", 0], ["y", 1]], note: "the a says /e/, the y says /ee/" },
-  again: { parts: [["a", 0], ["g", 0], ["ai", 1], ["n", 0]], note: "ai says /e/" },
-  who: { parts: [["wh", 1], ["o", 1]], note: "wh says /h/, the o says /oo/" },
-  whole: { parts: [["wh", 1], ["o", 0], ["l", 0], ["e", 0]], note: "wh says /h/; o and e say /oa/" },
-  where: { parts: [["wh", 0], ["ere", 1]], note: "ere says /air/" },
-  two: { parts: [["t", 0], ["wo", 1]], note: "wo says /oo/" },
-  school: { parts: [["s", 0], ["ch", 1], ["oo", 0], ["l", 0]], note: "ch says /k/" },
+  we: { parts: [["w", 0], ["e", 1]], note: "the e says /ee/" },
+  her: { parts: [["h", 0], ["er", 1]], note: "er says /ur/" },
+  she: { parts: [["sh", 0], ["e", 1]], note: "the e says /ee/" },
+  washing: { parts: [["w", 0], ["a", 1], ["sh", 0], ["i", 0], ["ng", 0]], note: "the a says /o/" },
+  some: { parts: [["s", 0], ["o", 1], ["m", 0], ["e", 1]], note: "the o says /u/, the e is silent" },
+  so: { parts: [["s", 0], ["o", 1]], note: "the o says /oa/" },
+  what: { parts: [["wh", 1], ["a", 1], ["t", 0]], note: "wh says /w/, the a says /o/" },
+  they: { parts: [["th", 0], ["ey", 1]], note: "ey says /ay/" },
+  do: { parts: [["d", 0], ["o", 1]], note: "the o says /oo/" },
+  old: { parts: [["o", 1], ["l", 0], ["d", 0]], note: "the o says /oa/" },
+  was: { parts: [["w", 0], ["a", 1], ["s", 1]], note: "the a says /o/ and the s says /z/" },
   call: { parts: [["c", 0], ["a", 1], ["ll", 0]], note: "the a says /or/" },
-  different: { parts: [["d", 0], ["i", 0], ["ff", 0], ["er", 0], ["e", 1], ["n", 0], ["t", 0]], note: "the middle e is barely said" },
-  thought: { parts: [["th", 0], ["ough", 1], ["t", 0]], note: "ough says /or/" },
+  saw: { parts: [["s", 0], ["aw", 1]], note: "aw isn't a Speed Sound yet (Set 3, “yawn at dawn”) — it says /or/" },
+  watch: { parts: [["w", 0], ["a", 1], ["tch", 1]], note: "the a says /o/, tch says /ch/" },
+  school: { parts: [["s", 0], ["ch", 1], ["oo", 0], ["l", 0]], note: "ch says /c/" },
+  small: { parts: [["s", 0], ["m", 0], ["a", 1], ["ll", 0]], note: "the a says /or/" },
+  their: { parts: [["th", 0], ["eir", 1]], note: "eir says /air/" },
+  who: { parts: [["wh", 1], ["o", 1]], note: "wh says /h/, the o says /oo/" },
+  tall: { parts: [["t", 0], ["a", 1], ["ll", 0]], note: "the a says /or/" },
+  brother: { parts: [["b", 0], ["r", 0], ["o", 1], ["th", 0], ["er", 0]], note: "the o says /u/" },
+  were: { parts: [["w", 0], ["ere", 1]], note: "ere says /ur/" },
+  "I'm": { parts: [["I", 1], ["'m", 1]], note: "short for I am — says /ime/" },
+  there: { parts: [["th", 0], ["ere", 1]], note: "ere says /air/" },
+  fall: { parts: [["f", 0], ["a", 1], ["ll", 0]], note: "the a says /or/" },
+  any: { parts: [["a", 1], ["n", 0], ["y", 1]], note: "the a says /e/, the y says /ee/" },
+  where: { parts: [["wh", 1], ["ere", 1]], note: "wh says /w/, ere says /air/" },
+  wall: { parts: [["w", 0], ["a", 1], ["ll", 0]], note: "the a says /or/" },
+  does: { parts: [["d", 0], ["oe", 1], ["s", 1]], note: "oe says /u/, the s says /z/" },
+  one: { parts: [["one", 1]], note: "the whole word says /wun/" },
+  other: { parts: [["o", 1], ["th", 0], ["er", 0]], note: "the o says /u/" },
+  two: { parts: [["t", 0], ["wo", 1]], note: "wo says /oo/" },
+  could: { parts: [["c", 0], ["oul", 1], ["d", 0]], note: "oul says /oo/, as in look" },
+  ball: { parts: [["b", 0], ["a", 1], ["ll", 0]], note: "the a says /or/" },
+  would: { parts: [["w", 0], ["oul", 1], ["d", 0]], note: "oul says /oo/, as in look" },
+  water: { parts: [["w", 0], ["a", 1], ["t", 0], ["er", 0]], note: "the a says /or/" },
+  wash: { parts: [["w", 0], ["a", 1], ["sh", 0]], note: "the a says /o/" },
+  anyone: { parts: [["a", 1], ["n", 0], ["y", 1], ["one", 1]], note: "any + one: the a says /e/, the y says /ee/, one says /wun/" },
+  over: { parts: [["o", 1], ["v", 0], ["er", 0]], note: "the o says /oa/" },
+  "wasn't": { parts: [["w", 0], ["a", 1], ["s", 1], ["n't", 0]], note: "was + not: the a says /o/, the s says /z/" },
   through: { parts: [["th", 0], ["r", 0], ["ough", 1]], note: "ough says /oo/" },
-  friend: { parts: [["f", 0], ["r", 0], ["ie", 1], ["n", 0], ["d", 0]], note: "ie says /e/" },
-  work: { parts: [["w", 0], ["or", 1], ["k", 0]], note: "or says /ur/" },
-  once: { parts: [["o", 1], ["n", 0], ["ce", 0]], note: "the o says /wu/" },
-  laugh: { parts: [["l", 0], ["au", 1], ["gh", 1]], note: "au says /ar/, gh says /f/" },
-  because: { parts: [["b", 0], ["e", 0], ["c", 0], ["au", 1], ["se", 1]], note: "au says /o/, se says /z/" },
-  eye: { parts: [["eye", 1]], note: "the whole word says /igh/" },
+  once: { parts: [["o", 1], ["n", 0], ["ce", 1]], note: "the o says /wu/, ce says /s/" },
+  son: { parts: [["s", 0], ["o", 1], ["n", 0]], note: "the o says /u/" },
+  whole: { parts: [["wh", 1], ["o", 0], ["l", 0], ["e", 0]], note: "wh says /h/; o and e work together (o-e, “phone home”)" },
+  people: { parts: [["p", 0], ["eo", 1], ["p", 0], ["le", 1]], note: "eo says /ee/, le says /l/" },
+  should: { parts: [["sh", 0], ["oul", 1], ["d", 0]], note: "oul says /oo/, as in look" },
+  come: { parts: [["c", 0], ["o", 1], ["m", 0], ["e", 1]], note: "the o says /u/, the e is silent" },
+  many: { parts: [["m", 0], ["a", 1], ["n", 0], ["y", 1]], note: "the a says /e/, the y says /ee/" },
+  mother: { parts: [["m", 0], ["o", 1], ["th", 0], ["er", 0]], note: "the o says /u/" },
+  father: { parts: [["f", 0], ["a", 1], ["th", 0], ["er", 0]], note: "the a says /ar/" },
+  here: { parts: [["h", 0], ["ere", 1]], note: "ere says /ear/" },
+  buy: { parts: [["b", 0], ["uy", 1]], note: "uy says /igh/" },
+  bought: { parts: [["b", 0], ["ough", 1], ["t", 0]], note: "ough says /or/" },
+  great: { parts: [["g", 0], ["r", 0], ["ea", 1], ["t", 0]], note: "ea says /ay/ here, not /ee/" },
+  above: { parts: [["a", 1], ["b", 0], ["o", 1], ["v", 0], ["e", 1]], note: "the a and the o both say /u/, the e is silent" },
+  someone: { parts: [["s", 0], ["o", 1], ["m", 0], ["e", 1], ["one", 1]], note: "some + one: the o says /u/, one says /wun/" },
+  another: { parts: [["a", 1], ["n", 0], ["o", 1], ["th", 0], ["er", 0]], note: "the a and the o both say /u/" },
+  walk: { parts: [["w", 0], ["al", 1], ["k", 0]], note: "al says /or/" },
+  caught: { parts: [["c", 0], ["augh", 1], ["t", 0]], note: "augh says /or/" },
+  worse: { parts: [["w", 0], ["or", 1], ["se", 1]], note: "or says /ur/, se says /s/" },
+  everyone: { parts: [["e", 0], ["v", 0], ["er", 0], ["y", 1], ["one", 1]], note: "every + one: the y says /ee/, one says /wun/" },
+  love: { parts: [["l", 0], ["o", 1], ["v", 0], ["e", 1]], note: "the o says /u/, the e is silent" },
+  wear: { parts: [["w", 0], ["ear", 1]], note: "ear says /air/ here, not /ear/" },
 };
 
 /* ------------------------------------------------------------------ */
@@ -169,31 +188,34 @@ const TRICKY_PARTS = {
 /* ------------------------------------------------------------------ */
 /* Each list must be readable at the level that sound is introduced —
  * the checker enforces it. That is why Level 1 lists are short: with
- * only s a t p there aren't many words. */
+ * only m a s d t there aren't many words. */
 const SOUND_WORDS = {
-  s: ["sat", "sap"], a: ["at", "sat", "tap"], t: ["tap", "at", "sat"], p: ["pat", "tap", "sap"],
-  i: ["it", "sit", "pin"], n: ["nap", "tin", "man"], m: ["mat", "map", "dim"], d: ["dad", "dip", "mad"],
+  m: ["mat", "mad", "am"], a: ["at", "mat", "sad"], s: ["sat", "sad", "as"], d: ["dad", "mad", "sad"],
+  t: ["at", "mat", "sat"], i: ["it", "sit", "pin"], n: ["nap", "tin", "man"], p: ["pat", "tap", "sap"],
   g: ["gap", "dig", "got"], o: ["on", "dog", "pot"], c: ["cat", "cap", "cot"], k: ["kit", "kid", "kip"],
-  ck: ["sock", "duck", "kick"], e: ["net", "pen", "ten"], u: ["up", "sun", "cup"], r: ["rat", "run", "red"],
-  h: ["hat", "hen", "hop"], b: ["bat", "bin", "bus"], f: ["fan", "fit", "fun"], l: ["leg", "lip", "log"],
-  ff: ["off", "huff", "puff"], ll: ["bell", "hill", "doll"], ss: ["hiss", "mess", "kiss"], j: ["jam", "jet", "jog"],
-  v: ["van", "vet", "vat"], w: ["wag", "web", "win"], x: ["box", "fox", "six"], y: ["yes", "yet", "yap"],
-  z: ["zip", "zap"], zz: ["buzz", "fizz", "jazz"], qu: ["quiz", "quit", "quick"], ch: ["chin", "chop", "much"],
-  sh: ["ship", "shop", "fish"], th: ["this", "that", "with"], ng: ["ring", "sing", "long"], nk: ["pink", "sink", "bank"],
-  ai: ["rain", "tail", "wait"], ee: ["see", "feet", "week"], igh: ["high", "night", "light"], oa: ["boat", "coat", "road"],
-  oo: ["moon", "food", "zoo"], "oo(book)": ["book", "look", "foot"], ar: ["car", "farm", "park"], or: ["for", "fork", "corn"],
-  ur: ["fur", "hurt", "burn"], ow: ["cow", "down", "town"], oi: ["coin", "boil", "join"], ear: ["ear", "hear", "near"],
-  air: ["air", "hair", "fair"], er: ["her", "letter", "hammer"],
-  dd: ["add", "odd", "ladder"], mm: ["hammer", "summer", "comma"], tt: ["letter", "better", "butter"],
-  bb: ["rabbit", "ribbon"], rr: ["carrot", "parrot"], gg: ["egg", "bigger", "jogger"], pp: ["puppet", "happen", "hopping"],
-  ay: ["day", "play", "way"], ou: ["out", "loud", "cloud"], ie: ["pie", "tie", "lie"], ea: ["eat", "sea", "team"],
-  oy: ["boy", "toy", "joy"], ir: ["bird", "girl", "first"], ue: ["blue", "glue", "true"], aw: ["saw", "paw", "yawn"],
-  wh: ["when", "wheel", "whisk"], ph: ["dolphin", "graph", "alphabet"], ew: ["chew", "new", "few"],
+  u: ["up", "sun", "cup"], b: ["bat", "bin", "bus"], f: ["fan", "fit", "fun"], e: ["net", "pen", "ten"],
+  l: ["leg", "lip", "log"], h: ["hat", "hen", "hop"], sh: ["ship", "shop", "fish"], r: ["rat", "run", "red"],
+  j: ["jam", "jet", "jog"], v: ["van", "vet", "vat"], y: ["yes", "yet", "yap"], w: ["wag", "web", "win"],
+  th: ["this", "that", "with"], z: ["zip", "zap"], ch: ["chin", "chop", "much"], qu: ["quiz", "quit"],
+  x: ["box", "fox", "six"], ng: ["ring", "sing", "long"], nk: ["pink", "sink", "bank"], ck: ["sock", "duck", "kick"],
+  ff: ["off", "huff", "puff"], ll: ["bell", "hill", "doll"], ss: ["hiss", "mess", "kiss"],
+  zz: ["buzz", "fizz", "jazz"], dd: ["add", "odd"], mm: ["summit", "comma"], tt: ["mitt", "kitten", "bottom"],
+  bb: ["rabbit", "ribbon"], rr: ["carrot", "parrot"], gg: ["egg", "eggs"], pp: ["puppet", "happen", "hopping"],
+  ay: ["day", "play", "way"], ee: ["see", "feet", "week"], igh: ["high", "night", "light"],
+  "ow(snow)": ["snow", "blow", "show"], oo: ["moon", "food", "zoo"], "oo(book)": ["book", "look", "foot"],
+  ar: ["car", "farm", "park"], or: ["for", "fork", "corn"], air: ["air", "hair", "fair"],
+  ir: ["bird", "girl", "first"], ou: ["out", "loud", "cloud"], oy: ["boy", "toy", "joy"], ea: ["eat", "sea", "team"],
+  oi: ["coin", "boil", "join"], "a-e": ["cake", "game", "made"], "i-e": ["bike", "time", "smile"],
+  "o-e": ["home", "bone", "nose"], "u-e": ["cube", "tune", "flute"], aw: ["paw", "claw", "yawn"],
+  are: ["care", "share", "scare"], ur: ["fur", "hurt", "burn"], er: ["letter", "better", "hammer"],
+  ow: ["cow", "down", "town"], ai: ["rain", "tail", "wait"], oa: ["boat", "coat", "road"], ew: ["chew", "new", "few"],
+  "e(he)": ["he", "me", "we", "she"], ire: ["fire", "wire", "tired"], ear: ["ear", "hear", "near"],
+  ure: ["pure", "cure", "picture"], tion: ["action", "fiction", "section"], tious: ["ambitious", "infectious"],
+  cious: ["delicious", "precious", "vicious"], ie: ["pie", "tie", "lie"], ue: ["blue", "glue", "true"],
   oe: ["toe", "goes", "hoe"], au: ["author", "haunt", "August"], ey: ["key", "donkey", "turkey"],
-  "a-e": ["cake", "game", "made"], "e-e": ["these", "theme", "eve"], "i-e": ["bike", "time", "smile"],
-  "o-e": ["home", "bone", "nose"], "u-e": ["cube", "tune", "flute"],
-  "c(soft)": ["city", "ice", "race"], "g(soft)": ["gem", "cage", "huge"], "y(ee)": ["happy", "silly", "very"],
-  "y(igh)": ["fly", "cry", "sky"], "ea(bread)": ["bread", "head", "ready"], "ow(snow)": ["snow", "blow", "yellow"],
+  wh: ["when", "wheel", "whisk"], ph: ["dolphin", "graph", "alphabet"], "e-e": ["these", "theme", "eve"],
+  "y(ee)": ["happy", "silly", "very"], "y(igh)": ["fly", "cry", "sky"], "c(soft)": ["city", "ice", "race"],
+  "g(soft)": ["gem", "cage", "huge"], "ea(bread)": ["bread", "head", "ready"],
 };
 
 /* ------------------------------------------------------------------ */
@@ -206,25 +228,31 @@ const SOUND_WORDS = {
 const WORD_SORTS = [
   { level: 2, bins: ["a", "i"], words: [["mat", "a"], ["pin", "i"], ["sat", "a"], ["sit", "i"], ["map", "a"], ["dip", "i"]] },
   { level: 3, bins: ["c", "k", "g"], words: [["cat", "c"], ["kit", "k"], ["gap", "g"], ["cot", "c"], ["kid", "k"], ["got", "g"]] },
-  { level: 4, bins: ["ck", "e", "u"], words: [["sock", "ck"], ["net", "e"], ["sun", "u"], ["duck", "ck"], ["pen", "e"], ["cup", "u"]] },
-  { level: 5, bins: ["h", "b", "f"], words: [["hat", "h"], ["bin", "b"], ["fan", "f"], ["hen", "h"], ["bat", "b"], ["fun", "f"]] },
-  { level: 6, bins: ["ff", "ll", "ss"], words: [["huff", "ff"], ["bell", "ll"], ["mess", "ss"], ["off", "ff"], ["hill", "ll"], ["kiss", "ss"]] },
-  { level: 7, bins: ["v", "w", "x"], words: [["van", "v"], ["web", "w"], ["box", "x"], ["vet", "v"], ["wig", "w"], ["fox", "x"]] },
-  { level: 8, bins: ["z", "qu", "ch"], words: [["zip", "z"], ["quiz", "qu"], ["chin", "ch"], ["zap", "z"], ["quit", "qu"], ["chop", "ch"]] },
-  { level: 9, bins: ["sh", "th", "ng"], words: [["ship", "sh"], ["this", "th"], ["ring", "ng"], ["fish", "sh"], ["bath", "th"], ["long", "ng"]] },
-  { level: 9, bins: ["ng", "nk"], words: [["ring", "ng"], ["pink", "nk"], ["sing", "ng"], ["sink", "nk"], ["long", "ng"], ["bank", "nk"]] },
-  { level: 11, bins: ["ai", "ee", "igh"], words: [["rain", "ai"], ["feet", "ee"], ["night", "igh"], ["tail", "ai"], ["see", "ee"], ["high", "igh"]] },
-  { level: 12, bins: ["oo", "ar", "or"], words: [["moon", "oo"], ["car", "ar"], ["for", "or"], ["zoo", "oo"], ["farm", "ar"], ["corn", "or"]] },
-  { level: 13, bins: ["ow", "oi", "ur"], words: [["cow", "ow"], ["coin", "oi"], ["fur", "ur"], ["down", "ow"], ["boil", "oi"], ["hurt", "ur"]] },
-  { level: 14, bins: ["ear", "air", "er"], words: [["ear", "ear"], ["hair", "air"], ["her", "er"], ["near", "ear"], ["fair", "air"], ["letter", "er"]] },
-  { level: 15, bins: ["st", "fl", "cr"], words: [["stop", "st"], ["flag", "fl"], ["crab", "cr"], ["stamp", "st"], ["flap", "fl"], ["crib", "cr"]] },
-  { level: 15, bins: ["-mp", "-nd", "-st"], words: [["jump", "-mp"], ["hand", "-nd"], ["nest", "-st"], ["lamp", "-mp"], ["sand", "-nd"], ["best", "-st"]] },
-  { level: 16, bins: ["ai", "ee", "oa"], words: [["train", "ai"], ["sleep", "ee"], ["float", "oa"], ["brain", "ai"], ["green", "ee"], ["toast", "oa"]] },
-  { level: 17, bins: ["ay", "ou", "ie"], words: [["day", "ay"], ["out", "ou"], ["pie", "ie"], ["play", "ay"], ["loud", "ou"], ["tie", "ie"]] },
-  { level: 18, bins: ["oy", "ir", "aw"], words: [["boy", "oy"], ["bird", "ir"], ["saw", "aw"], ["toy", "oy"], ["girl", "ir"], ["paw", "aw"]] },
-  { level: 19, bins: ["wh", "ph", "ew"], words: [["when", "wh"], ["graph", "ph"], ["new", "ew"], ["wheel", "wh"], ["dolphin", "ph"], ["chew", "ew"]] },
-  { level: 20, bins: ["a-e", "i-e", "o-e"], words: [["cake", "a-e"], ["bike", "i-e"], ["home", "o-e"], ["game", "a-e"], ["time", "i-e"], ["bone", "o-e"]] },
-  { level: 21, bins: ["c(soft)", "g(soft)"], words: [["city", "c(soft)"], ["gem", "g(soft)"], ["ice", "c(soft)"], ["cage", "g(soft)"], ["race", "c(soft)"], ["huge", "g(soft)"]] },
+  { level: 4, bins: ["h", "b", "f"], words: [["hat", "h"], ["bin", "b"], ["fan", "f"], ["hen", "h"], ["bat", "b"], ["fun", "f"]] },
+  { level: 6, bins: ["v", "w", "x"], words: [["van", "v"], ["web", "w"], ["box", "x"], ["vet", "v"], ["wig", "w"], ["fox", "x"]] },
+  { level: 6, bins: ["z", "qu", "ch"], words: [["zip", "z"], ["quiz", "qu"], ["chin", "ch"], ["zap", "z"], ["quit", "qu"], ["chop", "ch"]] },
+  { level: 6, bins: ["sh", "th", "ng"], words: [["ship", "sh"], ["this", "th"], ["ring", "ng"], ["fish", "sh"], ["bath", "th"], ["long", "ng"]] },
+  { level: 6, bins: ["ng", "nk"], words: [["ring", "ng"], ["pink", "nk"], ["sing", "ng"], ["sink", "nk"], ["long", "ng"], ["bank", "nk"]] },
+  { level: 7, bins: ["ck", "e", "u"], words: [["sock", "ck"], ["net", "e"], ["sun", "u"], ["duck", "ck"], ["pen", "e"], ["cup", "u"]] },
+  { level: 7, bins: ["ff", "ll", "ss"], words: [["huff", "ff"], ["bell", "ll"], ["mess", "ss"], ["off", "ff"], ["hill", "ll"], ["kiss", "ss"]] },
+  { level: 7, bins: ["st", "fl", "cr"], words: [["stop", "st"], ["flag", "fl"], ["crab", "cr"], ["stamp", "st"], ["flap", "fl"], ["crib", "cr"]] },
+  { level: 7, bins: ["-mp", "-nd", "-st"], words: [["jump", "-mp"], ["hand", "-nd"], ["nest", "-st"], ["lamp", "-mp"], ["sand", "-nd"], ["best", "-st"]] },
+  { level: 8, bins: ["ay", "ee", "igh"], words: [["day", "ay"], ["see", "ee"], ["night", "igh"], ["play", "ay"], ["feet", "ee"], ["high", "igh"]] },
+  { level: 9, bins: ["ow(snow)", "oo", "oo(book)"], words: [["snow", "ow(snow)"], ["moon", "oo"], ["book", "oo(book)"], ["blow", "ow(snow)"], ["zoo", "oo"], ["look", "oo(book)"]] },
+  { level: 10, bins: ["oo", "ar", "or"], words: [["moon", "oo"], ["car", "ar"], ["for", "or"], ["zoo", "oo"], ["farm", "ar"], ["corn", "or"]] },
+  { level: 12, bins: ["ea", "oi", "a-e"], words: [["sea", "ea"], ["coin", "oi"], ["cake", "a-e"], ["team", "ea"], ["boil", "oi"], ["game", "a-e"]] },
+  { level: 13, bins: ["a-e", "i-e", "o-e"], words: [["cake", "a-e"], ["bike", "i-e"], ["home", "o-e"], ["game", "a-e"], ["time", "i-e"], ["bone", "o-e"]] },
+  { level: 14, bins: ["oy", "ir", "aw"], words: [["boy", "oy"], ["bird", "ir"], ["jaw", "aw"], ["toy", "oy"], ["girl", "ir"], ["paw", "aw"]] },
+  { level: 14, bins: ["aw", "ur", "er"], words: [["paw", "aw"], ["fur", "ur"], ["letter", "er"], ["claw", "aw"], ["hurt", "ur"], ["better", "er"]] },
+  { level: 15, bins: ["ai", "ee", "igh"], words: [["rain", "ai"], ["feet", "ee"], ["night", "igh"], ["tail", "ai"], ["see", "ee"], ["high", "igh"]] },
+  { level: 15, bins: ["ow", "oi", "ur"], words: [["cow", "ow"], ["coin", "oi"], ["fur", "ur"], ["down", "ow"], ["boil", "oi"], ["hurt", "ur"]] },
+  { level: 15, bins: ["ai", "ee", "oa"], words: [["train", "ai"], ["sleep", "ee"], ["float", "oa"], ["brain", "ai"], ["green", "ee"], ["toast", "oa"]] },
+  { level: 15, bins: ["ow", "ai", "oa"], words: [["cow", "ow"], ["rain", "ai"], ["boat", "oa"], ["down", "ow"], ["tail", "ai"], ["coat", "oa"]] },
+  { level: 15, bins: ["ow(snow)", "ow"], words: [["snow", "ow(snow)"], ["cow", "ow"], ["blow", "ow(snow)"], ["down", "ow"], ["show", "ow(snow)"], ["town", "ow"]] },
+  { level: 16, bins: ["ear", "air", "er"], words: [["ear", "ear"], ["hair", "air"], ["hammer", "er"], ["near", "ear"], ["fair", "air"], ["letter", "er"]] },
+  { level: 18, bins: ["ay", "ou", "ie"], words: [["day", "ay"], ["out", "ou"], ["pie", "ie"], ["play", "ay"], ["loud", "ou"], ["tie", "ie"]] },
+  { level: 18, bins: ["wh", "ph", "ew"], words: [["when", "wh"], ["graph", "ph"], ["new", "ew"], ["wheel", "wh"], ["dolphin", "ph"], ["chew", "ew"]] },
+  { level: 18, bins: ["c(soft)", "g(soft)"], words: [["city", "c(soft)"], ["gem", "g(soft)"], ["ice", "c(soft)"], ["cage", "g(soft)"], ["race", "c(soft)"], ["huge", "g(soft)"]] },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -239,51 +267,53 @@ const WORD_WHEELS = [
   { level: 2, rime: "ap", rimeGpcs: ["a", "p"], onsets: [["t", ["t"]], ["m", ["m"]], ["n", ["n"]], ["s", ["s"]]] },
   { level: 3, rime: "ot", rimeGpcs: ["o", "t"], onsets: [["c", ["c"]], ["d", ["d"]], ["g", ["g"]], ["p", ["p"]]] },
   { level: 3, rime: "an", rimeGpcs: ["a", "n"], onsets: [["c", ["c"]], ["m", ["m"]], ["p", ["p"]], ["t", ["t"]]] },
-  { level: 4, rime: "et", rimeGpcs: ["e", "t"], onsets: [["n", ["n"]], ["p", ["p"]], ["g", ["g"]], ["m", ["m"]], ["s", ["s"]]] },
+  { level: 3, rime: "et", rimeGpcs: ["e", "t"], onsets: [["n", ["n"]], ["p", ["p"]], ["g", ["g"]], ["m", ["m"]], ["s", ["s"]]] },
+  { level: 3, rime: "ig", rimeGpcs: ["i", "g"], onsets: [["b", ["b"]], ["d", ["d"]], ["f", ["f"]], ["p", ["p"]]] },
   { level: 4, rime: "ug", rimeGpcs: ["u", "g"], onsets: [["r", ["r"]], ["m", ["m"]], ["d", ["d"]], ["t", ["t"]], ["p", ["p"]]] },
-  { level: 5, rime: "op", rimeGpcs: ["o", "p"], onsets: [["h", ["h"]], ["m", ["m"]], ["p", ["p"]], ["t", ["t"]], ["c", ["c"]]] },
-  { level: 5, rime: "ig", rimeGpcs: ["i", "g"], onsets: [["b", ["b"]], ["d", ["d"]], ["f", ["f"]], ["p", ["p"]]] },
-  { level: 5, rime: "ut", rimeGpcs: ["u", "t"], onsets: [["b", ["b"]], ["c", ["c"]], ["h", ["h"]], ["n", ["n"]]] },
-  { level: 6, rime: "ell", rimeGpcs: ["e", "ll"], onsets: [["b", ["b"]], ["f", ["f"]], ["s", ["s"]], ["t", ["t"]]] },
-  { level: 6, rime: "iss", rimeGpcs: ["i", "ss"], onsets: [["h", ["h"]], ["k", ["k"]], ["m", ["m"]]] },
-  { level: 6, rime: "uff", rimeGpcs: ["u", "ff"], onsets: [["h", ["h"]], ["p", ["p"]], ["c", ["c"]], ["m", ["m"]]] },
-  { level: 7, rime: "et", rimeGpcs: ["e", "t"], onsets: [["v", ["v"]], ["w", ["w"]], ["y", ["y"]], ["j", ["j"]]] },
-  { level: 7, rime: "ig", rimeGpcs: ["i", "g"], onsets: [["w", ["w"]], ["b", ["b"]], ["d", ["d"]], ["f", ["f"]], ["p", ["p"]]] },
-  { level: 8, rime: "ip", rimeGpcs: ["i", "p"], onsets: [["z", ["z"]], ["ch", ["ch"]], ["d", ["d"]], ["h", ["h"]], ["l", ["l"]], ["n", ["n"]]] },
-  { level: 8, rime: "op", rimeGpcs: ["o", "p"], onsets: [["ch", ["ch"]], ["h", ["h"]], ["m", ["m"]], ["p", ["p"]], ["t", ["t"]]] },
-  { level: 9, rime: "ash", rimeGpcs: ["a", "sh"], onsets: [["c", ["c"]], ["m", ["m"]], ["d", ["d"]], ["r", ["r"]], ["b", ["b"]]] },
-  { level: 9, rime: "ing", rimeGpcs: ["i", "ng"], onsets: [["k", ["k"]], ["r", ["r"]], ["s", ["s"]], ["w", ["w"]], ["th", ["th"]]] },
-  { level: 9, rime: "ink", rimeGpcs: ["i", "nk"], onsets: [["p", ["p"]], ["s", ["s"]], ["w", ["w"]], ["th", ["th"]], ["l", ["l"]]] },
-  { level: 11, rime: "ain", rimeGpcs: ["ai", "n"], onsets: [["m", ["m"]], ["p", ["p"]], ["r", ["r"]], ["g", ["g"]], ["ch", ["ch"]]] },
-  { level: 11, rime: "eep", rimeGpcs: ["ee", "p"], onsets: [["b", ["b"]], ["d", ["d"]], ["k", ["k"]], ["p", ["p"]], ["j", ["j"]], ["sh", ["sh"]]] },
-  { level: 11, rime: "ight", rimeGpcs: ["igh", "t"], onsets: [["f", ["f"]], ["l", ["l"]], ["m", ["m"]], ["n", ["n"]], ["r", ["r"]], ["s", ["s"]], ["t", ["t"]]] },
-  { level: 11, rime: "oat", rimeGpcs: ["oa", "t"], onsets: [["b", ["b"]], ["c", ["c"]], ["g", ["g"]]] },
-  { level: 12, rime: "oon", rimeGpcs: ["oo", "n"], onsets: [["m", ["m"]], ["n", ["n"]], ["s", ["s"]]] },
-  { level: 12, rime: "ook", rimeGpcs: ["oo(book)", "k"], onsets: [["b", ["b"]], ["c", ["c"]], ["h", ["h"]], ["l", ["l"]], ["t", ["t"]]] },
-  { level: 12, rime: "ar", rimeGpcs: ["ar"], onsets: [["c", ["c"]], ["f", ["f"]], ["j", ["j"]], ["t", ["t"]]] },
-  { level: 12, rime: "ork", rimeGpcs: ["or", "k"], onsets: [["c", ["c"]], ["f", ["f"]], ["p", ["p"]]] },
-  { level: 13, rime: "ow", rimeGpcs: ["ow"], onsets: [["c", ["c"]], ["h", ["h"]], ["n", ["n"]], ["w", ["w"]]] },
-  { level: 13, rime: "oil", rimeGpcs: ["oi", "l"], onsets: [["b", ["b"]], ["f", ["f"]], ["s", ["s"]]] },
-  { level: 13, rime: "ear", rimeGpcs: ["ear"], onsets: [["h", ["h"]], ["n", ["n"]], ["d", ["d"]], ["f", ["f"]], ["y", ["y"]]] },
-  { level: 14, rime: "air", rimeGpcs: ["air"], onsets: [["h", ["h"]], ["f", ["f"]], ["p", ["p"]], ["ch", ["ch"]]] },
-  { level: 15, rime: "amp", rimeGpcs: ["a", "m", "p"], onsets: [["c", ["c"]], ["d", ["d"]], ["l", ["l"]], ["r", ["r"]], ["st", ["s", "t"]], ["ch", ["ch"]]] },
-  { level: 15, rime: "and", rimeGpcs: ["a", "n", "d"], onsets: [["b", ["b"]], ["h", ["h"]], ["l", ["l"]], ["s", ["s"]], ["st", ["s", "t"]], ["gr", ["g", "r"]]] },
-  { level: 15, rime: "est", rimeGpcs: ["e", "s", "t"], onsets: [["b", ["b"]], ["n", ["n"]], ["r", ["r"]], ["t", ["t"]], ["ch", ["ch"]], ["v", ["v"]]] },
-  { level: 16, rime: "ain", rimeGpcs: ["ai", "n"], onsets: [["tr", ["t", "r"]], ["br", ["b", "r"]], ["gr", ["g", "r"]], ["dr", ["d", "r"]], ["ch", ["ch"]], ["st", ["s", "t"]]] },
-  { level: 16, rime: "eep", rimeGpcs: ["ee", "p"], onsets: [["sl", ["s", "l"]], ["st", ["s", "t"]], ["sw", ["s", "w"]], ["cr", ["c", "r"]], ["sh", ["sh"]]] },
-  { level: 16, rime: "eet", rimeGpcs: ["ee", "t"], onsets: [["f", ["f"]], ["m", ["m"]], ["sw", ["s", "w"]], ["sh", ["sh"]], ["str", ["s", "t", "r"]]] },
-  { level: 17, rime: "ay", rimeGpcs: ["ay"], onsets: [["d", ["d"]], ["m", ["m"]], ["p", ["p"]], ["s", ["s"]], ["w", ["w"]], ["pl", ["p", "l"]], ["st", ["s", "t"]], ["tr", ["t", "r"]]] },
-  { level: 17, rime: "ound", rimeGpcs: ["ou", "n", "d"], onsets: [["f", ["f"]], ["s", ["s"]], ["r", ["r"]], ["p", ["p"]], ["gr", ["g", "r"]], ["h", ["h"]]] },
-  { level: 17, rime: "ie", rimeGpcs: ["ie"], onsets: [["p", ["p"]], ["t", ["t"]], ["l", ["l"]], ["d", ["d"]]] },
-  { level: 18, rime: "oy", rimeGpcs: ["oy"], onsets: [["b", ["b"]], ["t", ["t"]], ["j", ["j"]]] },
-  { level: 18, rime: "aw", rimeGpcs: ["aw"], onsets: [["s", ["s"]], ["p", ["p"]], ["j", ["j"]], ["r", ["r"]], ["cl", ["c", "l"]], ["dr", ["d", "r"]], ["str", ["s", "t", "r"]]] },
-  { level: 19, rime: "ew", rimeGpcs: ["ew"], onsets: [["ch", ["ch"]], ["n", ["n"]], ["f", ["f"]], ["d", ["d"]], ["st", ["s", "t"]], ["bl", ["b", "l"]], ["gr", ["g", "r"]]] },
-  { level: 19, rime: "eel", rimeGpcs: ["ee", "l"], onsets: [["wh", ["wh"]], ["f", ["f"]], ["h", ["h"]], ["p", ["p"]], ["st", ["s", "t"]]] },
-  { level: 20, rime: "ake", rimeGpcs: ["a-e", "k"], onsets: [["b", ["b"]], ["c", ["c"]], ["l", ["l"]], ["m", ["m"]], ["r", ["r"]], ["t", ["t"]], ["w", ["w"]], ["sn", ["s", "n"]], ["sh", ["sh"]]] },
-  { level: 20, rime: "ine", rimeGpcs: ["i-e", "n"], onsets: [["d", ["d"]], ["f", ["f"]], ["l", ["l"]], ["m", ["m"]], ["n", ["n"]], ["p", ["p"]], ["v", ["v"]], ["sh", ["sh"]], ["sp", ["s", "p"]]] },
-  { level: 20, rime: "ope", rimeGpcs: ["o-e", "p"], onsets: [["h", ["h"]], ["r", ["r"]], ["sl", ["s", "l"]], ["sc", ["s", "c"]]] },
-  { level: 21, rime: "ice", rimeGpcs: ["i-e", "c(soft)"], onsets: [["d", ["d"]], ["m", ["m"]], ["n", ["n"]], ["r", ["r"]], ["sl", ["s", "l"]], ["pr", ["p", "r"]], ["tw", ["t", "w"]], ["sp", ["s", "p"]]] },
-  { level: 21, rime: "ow", rimeGpcs: ["ow(snow)"], onsets: [["sn", ["s", "n"]], ["bl", ["b", "l"]], ["gl", ["g", "l"]], ["sl", ["s", "l"]], ["gr", ["g", "r"]], ["sh", ["sh"]], ["thr", ["th", "r"]]] },
+  { level: 4, rime: "op", rimeGpcs: ["o", "p"], onsets: [["h", ["h"]], ["m", ["m"]], ["p", ["p"]], ["t", ["t"]], ["c", ["c"]]] },
+  { level: 4, rime: "ut", rimeGpcs: ["u", "t"], onsets: [["b", ["b"]], ["c", ["c"]], ["h", ["h"]], ["n", ["n"]]] },
+  { level: 4, rime: "ash", rimeGpcs: ["a", "sh"], onsets: [["c", ["c"]], ["m", ["m"]], ["d", ["d"]], ["r", ["r"]], ["b", ["b"]]] },
+  { level: 5, rime: "et", rimeGpcs: ["e", "t"], onsets: [["v", ["v"]], ["w", ["w"]], ["y", ["y"]], ["j", ["j"]]] },
+  { level: 5, rime: "ig", rimeGpcs: ["i", "g"], onsets: [["w", ["w"]], ["b", ["b"]], ["d", ["d"]], ["f", ["f"]], ["p", ["p"]]] },
+  { level: 6, rime: "ip", rimeGpcs: ["i", "p"], onsets: [["z", ["z"]], ["ch", ["ch"]], ["d", ["d"]], ["h", ["h"]], ["l", ["l"]], ["n", ["n"]]] },
+  { level: 6, rime: "op", rimeGpcs: ["o", "p"], onsets: [["ch", ["ch"]], ["h", ["h"]], ["m", ["m"]], ["p", ["p"]], ["t", ["t"]]] },
+  { level: 6, rime: "ing", rimeGpcs: ["i", "ng"], onsets: [["k", ["k"]], ["r", ["r"]], ["s", ["s"]], ["w", ["w"]], ["th", ["th"]]] },
+  { level: 6, rime: "ink", rimeGpcs: ["i", "nk"], onsets: [["p", ["p"]], ["s", ["s"]], ["w", ["w"]], ["th", ["th"]], ["l", ["l"]]] },
+  { level: 7, rime: "ell", rimeGpcs: ["e", "ll"], onsets: [["b", ["b"]], ["f", ["f"]], ["s", ["s"]], ["t", ["t"]]] },
+  { level: 7, rime: "iss", rimeGpcs: ["i", "ss"], onsets: [["h", ["h"]], ["k", ["k"]], ["m", ["m"]]] },
+  { level: 7, rime: "uff", rimeGpcs: ["u", "ff"], onsets: [["h", ["h"]], ["p", ["p"]], ["c", ["c"]], ["m", ["m"]]] },
+  { level: 7, rime: "amp", rimeGpcs: ["a", "m", "p"], onsets: [["c", ["c"]], ["d", ["d"]], ["l", ["l"]], ["r", ["r"]], ["st", ["s", "t"]], ["ch", ["ch"]]] },
+  { level: 7, rime: "and", rimeGpcs: ["a", "n", "d"], onsets: [["b", ["b"]], ["h", ["h"]], ["l", ["l"]], ["s", ["s"]], ["st", ["s", "t"]], ["gr", ["g", "r"]]] },
+  { level: 7, rime: "est", rimeGpcs: ["e", "s", "t"], onsets: [["b", ["b"]], ["n", ["n"]], ["r", ["r"]], ["t", ["t"]], ["ch", ["ch"]], ["v", ["v"]]] },
+  { level: 8, rime: "eep", rimeGpcs: ["ee", "p"], onsets: [["b", ["b"]], ["d", ["d"]], ["k", ["k"]], ["p", ["p"]], ["j", ["j"]], ["sh", ["sh"]]] },
+  { level: 8, rime: "ight", rimeGpcs: ["igh", "t"], onsets: [["f", ["f"]], ["l", ["l"]], ["m", ["m"]], ["n", ["n"]], ["r", ["r"]], ["s", ["s"]], ["t", ["t"]]] },
+  { level: 8, rime: "eep", rimeGpcs: ["ee", "p"], onsets: [["sl", ["s", "l"]], ["st", ["s", "t"]], ["sw", ["s", "w"]], ["cr", ["c", "r"]], ["sh", ["sh"]]] },
+  { level: 8, rime: "eet", rimeGpcs: ["ee", "t"], onsets: [["f", ["f"]], ["m", ["m"]], ["sw", ["s", "w"]], ["sh", ["sh"]], ["str", ["s", "t", "r"]]] },
+  { level: 8, rime: "ay", rimeGpcs: ["ay"], onsets: [["d", ["d"]], ["m", ["m"]], ["p", ["p"]], ["s", ["s"]], ["w", ["w"]], ["pl", ["p", "l"]], ["st", ["s", "t"]], ["tr", ["t", "r"]]] },
+  { level: 8, rime: "eel", rimeGpcs: ["ee", "l"], onsets: [["f", ["f"]], ["h", ["h"]], ["p", ["p"]], ["st", ["s", "t"]]] },
+  { level: 9, rime: "oon", rimeGpcs: ["oo", "n"], onsets: [["m", ["m"]], ["n", ["n"]], ["s", ["s"]]] },
+  { level: 9, rime: "ook", rimeGpcs: ["oo(book)", "k"], onsets: [["b", ["b"]], ["c", ["c"]], ["h", ["h"]], ["l", ["l"]], ["t", ["t"]]] },
+  { level: 9, rime: "ow", rimeGpcs: ["ow(snow)"], onsets: [["sn", ["s", "n"]], ["bl", ["b", "l"]], ["gl", ["g", "l"]], ["sl", ["s", "l"]], ["gr", ["g", "r"]], ["sh", ["sh"]], ["thr", ["th", "r"]]] },
+  { level: 10, rime: "ar", rimeGpcs: ["ar"], onsets: [["c", ["c"]], ["f", ["f"]], ["j", ["j"]], ["t", ["t"]]] },
+  { level: 10, rime: "ork", rimeGpcs: ["or", "k"], onsets: [["c", ["c"]], ["f", ["f"]], ["p", ["p"]]] },
+  { level: 10, rime: "air", rimeGpcs: ["air"], onsets: [["h", ["h"]], ["f", ["f"]], ["p", ["p"]], ["ch", ["ch"]]] },
+  { level: 11, rime: "ound", rimeGpcs: ["ou", "n", "d"], onsets: [["f", ["f"]], ["s", ["s"]], ["r", ["r"]], ["p", ["p"]], ["gr", ["g", "r"]], ["h", ["h"]]] },
+  { level: 11, rime: "oy", rimeGpcs: ["oy"], onsets: [["b", ["b"]], ["t", ["t"]], ["j", ["j"]]] },
+  { level: 12, rime: "oil", rimeGpcs: ["oi", "l"], onsets: [["b", ["b"]], ["f", ["f"]], ["s", ["s"]]] },
+  { level: 12, rime: "ake", rimeGpcs: ["a-e", "k"], onsets: [["b", ["b"]], ["c", ["c"]], ["l", ["l"]], ["m", ["m"]], ["r", ["r"]], ["t", ["t"]], ["w", ["w"]], ["sn", ["s", "n"]], ["sh", ["sh"]]] },
+  { level: 13, rime: "ine", rimeGpcs: ["i-e", "n"], onsets: [["d", ["d"]], ["f", ["f"]], ["l", ["l"]], ["m", ["m"]], ["n", ["n"]], ["p", ["p"]], ["v", ["v"]], ["sh", ["sh"]], ["sp", ["s", "p"]]] },
+  { level: 13, rime: "ope", rimeGpcs: ["o-e", "p"], onsets: [["h", ["h"]], ["r", ["r"]], ["sl", ["s", "l"]], ["sc", ["s", "c"]]] },
+  { level: 14, rime: "aw", rimeGpcs: ["aw"], onsets: [["p", ["p"]], ["j", ["j"]], ["r", ["r"]], ["cl", ["c", "l"]], ["dr", ["d", "r"]], ["str", ["s", "t", "r"]]] },
+  { level: 14, rime: "are", rimeGpcs: ["are"], onsets: [["c", ["c"]], ["d", ["d"]], ["sh", ["sh"]], ["st", ["s", "t"]], ["sc", ["s", "c"]]] },
+  { level: 15, rime: "ain", rimeGpcs: ["ai", "n"], onsets: [["m", ["m"]], ["p", ["p"]], ["r", ["r"]], ["g", ["g"]], ["ch", ["ch"]]] },
+  { level: 15, rime: "oat", rimeGpcs: ["oa", "t"], onsets: [["b", ["b"]], ["c", ["c"]], ["g", ["g"]]] },
+  { level: 15, rime: "ow", rimeGpcs: ["ow"], onsets: [["c", ["c"]], ["h", ["h"]], ["n", ["n"]], ["w", ["w"]]] },
+  { level: 15, rime: "ain", rimeGpcs: ["ai", "n"], onsets: [["tr", ["t", "r"]], ["br", ["b", "r"]], ["gr", ["g", "r"]], ["dr", ["d", "r"]], ["ch", ["ch"]], ["st", ["s", "t"]]] },
+  { level: 15, rime: "ew", rimeGpcs: ["ew"], onsets: [["ch", ["ch"]], ["n", ["n"]], ["f", ["f"]], ["d", ["d"]], ["st", ["s", "t"]], ["bl", ["b", "l"]], ["gr", ["g", "r"]]] },
+  { level: 16, rime: "ear", rimeGpcs: ["ear"], onsets: [["h", ["h"]], ["n", ["n"]], ["d", ["d"]], ["f", ["f"]], ["y", ["y"]]] },
+  { level: 16, rime: "ire", rimeGpcs: ["ire"], onsets: [["f", ["f"]], ["h", ["h"]], ["w", ["w"]], ["sp", ["s", "p"]]] },
+  { level: 18, rime: "ie", rimeGpcs: ["ie"], onsets: [["p", ["p"]], ["t", ["t"]], ["l", ["l"]], ["d", ["d"]]] },
+  { level: 18, rime: "ice", rimeGpcs: ["i-e", "c(soft)"], onsets: [["d", ["d"]], ["m", ["m"]], ["n", ["n"]], ["r", ["r"]], ["sl", ["s", "l"]], ["pr", ["p", "r"]], ["tw", ["t", "w"]], ["sp", ["s", "p"]]] },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -301,14 +331,12 @@ function introLevel(gpc) { return _intro[gpc] || null; }
 function trickyIntroLevel(word) { return _intro["tricky:" + String(word).toLowerCase()] || null; }
 
 /* The level a word first becomes readable, from its explicit GPC breakdown.
- * Rules beyond "every sound taught": a -s ending needs Level 10; two
- * consonant sounds in a row need Phase 4 — Set 1 with short vowels (15),
- * Set 2 if the word also has a long vowel sound (16). Returns null for a
- * word with no breakdown or with a sound that's never taught. */
+ * Rules beyond "every sound taught": a -s ending, or two consonant sounds in
+ * a row, need Word Time 1.7 (Level 7). Returns null for a word with no
+ * breakdown or with a sound that's never taught. */
 function minLevelFor(gpcs) {
   if (!gpcs || !gpcs.length) return null;
   let lvl = 1;
-  let hasLong = false;
   let prevConsonant = false;
   for (const g of gpcs) {
     if (g === "-s") { lvl = Math.max(lvl, SUFFIX_S_LEVEL); prevConsonant = false; continue; }
@@ -316,33 +344,21 @@ function minLevelFor(gpcs) {
     if (!intro) return null;
     lvl = Math.max(lvl, intro);
     const isVowel = VOWEL_GPCS.has(g);
-    if (isVowel && LONG_VOWEL_GPCS.has(g)) hasLong = true;
-    if (!isVowel && prevConsonant) lvl = Math.max(lvl, ADJACENT_SHORT_LEVEL);
+    if (!isVowel && prevConsonant) lvl = Math.max(lvl, ADJACENT_LEVEL);
     prevConsonant = !isVowel;
   }
-  // a second pass: if adjacency was hit and the word has a long vowel, Set 2
-  if (lvl >= ADJACENT_SHORT_LEVEL && lvl < ADJACENT_LONG_LEVEL && hasLong && hasAdjacent(gpcs)) lvl = ADJACENT_LONG_LEVEL;
   return lvl;
-}
-function hasAdjacent(gpcs) {
-  let prev = false;
-  for (const g of gpcs) {
-    if (g === "-s") { prev = false; continue; }
-    const c = !VOWEL_GPCS.has(g);
-    if (c && prev) return true;
-    prev = c;
-  }
-  return false;
 }
 function minLevel(word) {
   const g = typeof WORDS !== "undefined" ? WORDS[String(word).toLowerCase()] : null;
   return minLevelFor(g);
 }
-/* Some tricky words stop being tricky: "and" is fully regular once adjacent
- * consonants are taught (Level 15), "her" once er is (Level 14). Little
- * Wandle footnotes these on its own lists. A word is tricky AT a level if it
- * is on the tricky list and is not yet decodable from its GPCs. Stories use
- * this to decide whether to show a word in blue. */
+/* Some Red Words stop being red: "paint" is fully regular once ai is taught
+ * (Level 15), "he" once Set 3's e is (Level 16). A word is red AT a level if
+ * it is on the Red Word list and is not yet decodable from its GPCs. Stories
+ * use this to decide whether to show a word in red. Words RWI keeps listing
+ * as red after their sounds are taught (all, her, saw…) are left out of the
+ * word bank on purpose, so they stay red. */
 function isTrickyAt(word, level) {
   const w = String(word).toLowerCase();
   const tl = trickyIntroLevel(w);

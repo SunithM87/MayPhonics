@@ -4,33 +4,41 @@
  *
  * This is the source of truth for "can he read this word yet?" — see
  * minLevelFor() in phonics.js. A word is readable at the first level where
- * every one of its graphemes has been taught (plus the Phase 4 rule for two
- * consonants in a row, and Level 10 for a -s ending).
+ * every one of its graphemes has been taught (plus Word Time 1.7, Level 7,
+ * for two consonants in a row or a -s ending).
  *
  * Conventions:
- *   "-s"        a plural / verb -s ending (gets, ducks) — Level 10+
+ *   "-s"        a plural / verb -s ending (gets, ducks) — Level 7+
  *   "a-e" etc.  a split digraph: the vowel and a later e make one sound
  *   "oo(book)"  the short oo; plain "oo" is the long one (moon)
  *   "ow(snow)"  ow saying /oa/; plain "ow" is cow
  *   "ea(bread)" ea saying /e/;  plain "ea" is eat
  *   "c(soft)" "g(soft)" "y(ee)" "y(igh)"  the alternative sounds
+ *   "e(he)"     Set 3's e saying /ee/ (he, me, we)
+ *   "are" "ire" "ure" "tion" "tious" "cious"  Set 3 sounds
  *
  * Entries were generated with tools/segment.js and then reviewed by hand;
  * to add a word, run  node tools/segment.js theword  and paste the line.
  * tools/check-content.js will refuse any word used anywhere in the app that
  * is missing from here, so nothing can slip in unreviewed.
  *
- * A few TRICKY words are here too (and, her, when, out, my, by): they are
- * tricky when first met but become fully decodable once their sounds are
- * taught — see isTrickyAt() in phonics.js.
+ * A few RED words are here too (my, paint, he, she, we, me, be): they are
+ * red when first met but become fully decodable once their sounds are
+ * taught — see isTrickyAt() in phonics.js. Red Words that RWI keeps listing
+ * as red after their sounds arrive (her, saw, all) are deliberately NOT
+ * here, so they stay red.
  */
 
 const WORDS = {
   a: ["a"],
+  action: ["a","c","tion"],
   add: ["a","dd"],
   air: ["air"],
   alphabet: ["a","l","ph","a","b","e","t"],
+  am: ["a","m"],
+  ambitious: ["a","m","b","i","tious"],
   and: ["a","n","d"],
+  as: ["a","s"],
   at: ["a","t"],
   august: ["au","g","u","s","t"],
   author: ["au","th","or"],
@@ -44,6 +52,7 @@ const WORDS = {
   bash: ["b","a","sh"],
   bat: ["b","a","t"],
   bath: ["b","a","th"],
+  be: ["b","e(he)"],
   bed: ["b","e","d"],
   beep: ["b","ee","p"],
   bell: ["b","e","ll"],
@@ -52,6 +61,7 @@ const WORDS = {
   big: ["b","i","g"],
   bigger: ["b","i","gg","er"],
   bike: ["b","i-e","k"],
+  bite: ["b","i-e","t"],
   bin: ["b","i","n"],
   bird: ["b","ir","d"],
   birthday: ["b","ir","th","d","ay"],
@@ -65,6 +75,7 @@ const WORDS = {
   bone: ["b","o-e","n"],
   book: ["b","oo(book)","k"],
   boots: ["b","oo","t","s"],
+  bottom: ["b","o","tt","o","m"],
   box: ["b","o","x"],
   boy: ["b","oy"],
   brain: ["b","r","ai","n"],
@@ -88,6 +99,7 @@ const WORDS = {
   cap: ["c","a","p"],
   car: ["c","ar"],
   card: ["c","ar","d"],
+  care: ["c","are"],
   carrot: ["c","a","rr","o","t"],
   cash: ["c","a","sh"],
   cat: ["c","a","t"],
@@ -121,15 +133,18 @@ const WORDS = {
   cube: ["c","u-e","b"],
   cuff: ["c","u","ff"],
   cup: ["c","u","p"],
+  cure: ["c","ure"],
   cut: ["c","u","t"],
   dad: ["d","a","d"],
   damp: ["d","a","m","p"],
+  dare: ["d","are"],
   dark: ["d","ar","k"],
   dash: ["d","a","sh"],
   day: ["d","ay"],
   dear: ["d","ear"],
   deck: ["d","e","ck"],
   deep: ["d","ee","p"],
+  delicious: ["d","e","l","i","cious"],
   dew: ["d","ew"],
   dice: ["d","i-e","c(soft)"],
   did: ["d","i","d"],
@@ -153,6 +168,7 @@ const WORDS = {
   ear: ["ear"],
   eat: ["ea","t"],
   egg: ["e","gg"],
+  eggs: ["e","gg","-s"],
   eve: ["e-e","v"],
   fair: ["f","air"],
   fan: ["f","a","n"],
@@ -165,10 +181,12 @@ const WORDS = {
   feet: ["f","ee","t"],
   fell: ["f","e","ll"],
   few: ["f","ew"],
+  fiction: ["f","i","c","tion"],
   fig: ["f","i","g"],
   fight: ["f","igh","t"],
   fin: ["f","i","n"],
   fine: ["f","i-e","n"],
+  fire: ["f","ire"],
   first: ["f","ir","s","t"],
   fish: ["f","i","sh"],
   fit: ["f","i","t"],
@@ -219,17 +237,19 @@ const WORDS = {
   hand: ["h","a","n","d"],
   happen: ["h","a","pp","e","n"],
   happy: ["h","a","pp","y(ee)"],
+  has: ["h","a","s"],
   hat: ["h","a","t"],
   haunt: ["h","au","n","t"],
+  he: ["h","e(he)"],
   head: ["h","ea(bread)","d"],
   hear: ["h","ear"],
   heel: ["h","ee","l"],
   hen: ["h","e","n"],
-  her: ["h","er"],
-  hers: ["h","er","-s"],
   high: ["h","igh"],
   hill: ["h","i","ll"],
   hip: ["h","i","p"],
+  hire: ["h","ire"],
+  his: ["h","i","s"],
   hiss: ["h","i","ss"],
   hit: ["h","i","t"],
   hoe: ["h","oe"],
@@ -250,7 +270,9 @@ const WORDS = {
   hut: ["h","u","t"],
   ice: ["i-e","c(soft)"],
   in: ["i","n"],
+  infectious: ["i","n","f","e","c","tious"],
   inside: ["i","n","s","i-e","d"],
+  is: ["i","s"],
   it: ["i","t"],
   jam: ["j","a","m"],
   jar: ["j","ar"],
@@ -271,6 +293,7 @@ const WORDS = {
   kip: ["k","i","p"],
   kiss: ["k","i","ss"],
   kit: ["k","i","t"],
+  kitten: ["k","i","tt","e","n"],
   ladder: ["l","a","dd","er"],
   lake: ["l","a-e","k"],
   lamp: ["l","a","m","p"],
@@ -302,14 +325,18 @@ const WORDS = {
   mash: ["m","a","sh"],
   mat: ["m","a","t"],
   may: ["m","ay"],
+  me: ["m","e(he)"],
   meet: ["m","ee","t"],
   men: ["m","e","n"],
+  mention: ["m","e","n","tion"],
   mess: ["m","e","ss"],
   met: ["m","e","t"],
   mice: ["m","i-e","c(soft)"],
   might: ["m","igh","t"],
   mine: ["m","i-e","n"],
   miss: ["m","i","ss"],
+  mitt: ["m","i","tt"],
+  mixture: ["m","i","x","t","ure"],
   moon: ["m","oo","n"],
   mop: ["m","o","p"],
   much: ["m","u","ch"],
@@ -355,6 +382,7 @@ const WORDS = {
   pen: ["p","e","n"],
   pet: ["p","e","t"],
   pick: ["p","i","ck"],
+  picture: ["p","i","c","t","ure"],
   pie: ["p","ie"],
   pig: ["p","i","g"],
   pin: ["p","i","n"],
@@ -369,10 +397,12 @@ const WORDS = {
   pork: ["p","or","k"],
   pot: ["p","o","t"],
   pound: ["p","ou","n","d"],
+  precious: ["p","r","e","cious"],
   price: ["p","r","i-e","c(soft)"],
   puff: ["p","u","ff"],
   pug: ["p","u","g"],
   puppet: ["p","u","pp","e","t"],
+  pure: ["p","ure"],
   quick: ["qu","i","ck"],
   quit: ["qu","i","t"],
   quiz: ["qu","i","z"],
@@ -409,15 +439,18 @@ const WORDS = {
   sand: ["s","a","n","d"],
   sap: ["s","a","p"],
   sat: ["s","a","t"],
-  saw: ["s","aw"],
   say: ["s","ay"],
+  scare: ["s","c","are"],
   scope: ["s","c","o-e","p"],
   sea: ["s","ea"],
+  section: ["s","e","c","tion"],
   see: ["s","ee"],
   sees: ["s","ee","-s"],
   sell: ["s","e","ll"],
   set: ["s","e","t"],
   shake: ["sh","a-e","k"],
+  share: ["sh","are"],
+  she: ["sh","e(he)"],
   shed: ["sh","e","d"],
   sheep: ["sh","ee","p"],
   sheet: ["sh","ee","t"],
@@ -448,11 +481,13 @@ const WORDS = {
   sound: ["s","ou","n","d"],
   spice: ["s","p","i-e","c(soft)"],
   spine: ["s","p","i-e","n"],
+  spire: ["s","p","ire"],
   splash: ["s","p","l","a","sh"],
   stain: ["s","t","ai","n"],
   stamp: ["s","t","a","m","p"],
   stand: ["s","t","a","n","d"],
   stands: ["s","t","a","n","d","-s"],
+  stare: ["s","t","are"],
   stay: ["s","t","ay"],
   steel: ["s","t","ee","l"],
   steep: ["s","t","ee","p"],
@@ -463,6 +498,7 @@ const WORDS = {
   stuck: ["s","t","u","ck"],
   suck: ["s","u","ck"],
   summer: ["s","u","mm","er"],
+  summit: ["s","u","mm","i","t"],
   sun: ["s","u","n"],
   sweep: ["s","w","ee","p"],
   sweet: ["s","w","ee","t"],
@@ -492,6 +528,7 @@ const WORDS = {
   time: ["t","i-e","m"],
   tin: ["t","i","n"],
   tip: ["t","i","p"],
+  tired: ["t","ire","d"],
   toast: ["t","oa","s","t"],
   toe: ["t","oe"],
   too: ["t","oo"],
@@ -515,11 +552,13 @@ const WORDS = {
   very: ["v","er","y(ee)"],
   vest: ["v","e","s","t"],
   vet: ["v","e","t"],
+  vicious: ["v","i","cious"],
   vine: ["v","i-e","n"],
   wag: ["w","a","g"],
   wait: ["w","ai","t"],
   wake: ["w","a-e","k"],
   way: ["w","ay"],
+  we: ["w","e(he)"],
   web: ["w","e","b"],
   week: ["w","ee","k"],
   went: ["w","e","n","t"],
@@ -533,6 +572,7 @@ const WORDS = {
   wind: ["w","i","n","d"],
   wing: ["w","i","ng"],
   wink: ["w","i","nk"],
+  wire: ["w","ire"],
   with: ["w","i","th"],
   wow: ["w","ow"],
   yap: ["y","a","p"],

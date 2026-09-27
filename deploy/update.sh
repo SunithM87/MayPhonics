@@ -1,7 +1,7 @@
 #!/bin/sh
-# Update the Reading Den from a terminal:
+# Update the Reading Den (Read Write Inc. edition) from a terminal:
 #
-#   curl -fsSL https://raw.githubusercontent.com/SunithM87/Phonics/claude/gifted-feynman-6q1506/deploy/update.sh | sudo sh
+#   curl -fsSL https://raw.githubusercontent.com/SunithM87/MayPhonics/claude/reading-den-app-migration-3torha/deploy/update.sh | sudo sh
 #
 # The container updates itself every time it starts, so normally this just
 # restarts it and waits for the new version. If the container is still the
@@ -13,11 +13,11 @@
 # From a phone with no terminal: restart the container in the UGREEN Docker
 # app instead. Once it's the self-updating kind, that does the same thing.
 set -eu
-REPO="SunithM87/Phonics"
-BRANCH="${BRANCH:-claude/gifted-feynman-6q1506}"
-PORT="${PORT:-8000}"
-NAME=reading-den
-DEFAULT_DATA="/volume2/appdata/Reading Den/deploy/data"
+REPO="SunithM87/MayPhonics"
+BRANCH="${BRANCH:-claude/reading-den-app-migration-3torha}"
+PORT="${PORT:-8001}"
+NAME=reading-den-rwi
+DEFAULT_DATA="/volume2/appdata/Reading Den RWI/data"
 
 die() { echo "update: $*" >&2; exit 1; }
 label() { docker inspect "$NAME" --format "{{index .Config.Labels \"$1\"}}" 2>/dev/null | sed 's/^<no value>$//'; }
@@ -63,7 +63,7 @@ else
   if docker inspect "$NAME" >/dev/null 2>&1 && [ -z "$PROJECT" ]; then
     docker rm -f "$NAME" >/dev/null   # not made by compose, so compose can't replace it
   fi
-  docker compose -p "${PROJECT:-reading-den}" -f "$FILE" up -d --remove-orphans
+  docker compose -p "${PROJECT:-reading-den-rwi}" -f "$FILE" up -d --remove-orphans
 fi
 
 i=0

@@ -8,7 +8,10 @@
  * This replaces the earlier check-decodable.js, which only checked stories
  * and — the real problem — only asked "can this spelling be split into
  * taught letter-strings?", so it accepted "cake" and "phone" at Phase 2 by
- * reading them letter-by-letter. That is not decodability. Here every word
+ * reading them letter-by-letter. That is not decodability.
+ *
+ * "Tricky" in the code means RWI's Red Words; the key is kept so saved
+ * progress carries over. Here every word
  * must have an explicit, reviewed grapheme breakdown in words.js, and each
  * of THOSE graphemes must be taught by the level in question.
  */
@@ -34,7 +37,7 @@ function checkWord(raw, level, where) {
   const w = raw.toLowerCase().replace(/[^a-z’'-]/g, "").replace(/[’']s$/, "").replace(/^[’']|[’']$/g, "");
   if (!w) return;
   const tl = S.trickyIntroLevel(w);
-  if (tl) { if (tl > level) fail(where, `"${w}" is a tricky word but not taught until Level ${tl}`); return; }
+  if (tl) { if (tl > level) fail(where, `"${w}" is a Red Word but not taught until Level ${tl}`); return; }
   if (NAMES.has(w)) return;
   const g = S.WORDS[w];
   if (!g) return fail(where, `"${w}" has no breakdown in words.js`);
@@ -98,23 +101,23 @@ for (const st of S.STORIES) {
     if (ml) need = Math.max(need, ml);
   }
   for (const p of st.pages) for (const t of p.tricky || []) {
-    if (!S.trickyIntroLevel(t)) fail(`story "${st.title}"`, `"${t}" marked tricky but is not a tricky word`);
-    else if (S.trickyIntroLevel(t) > level) fail(`story "${st.title}"`, `tricky word "${t}" not taught until Level ${S.trickyIntroLevel(t)}`);
+    if (!S.trickyIntroLevel(t)) fail(`story "${st.title}"`, `"${t}" marked red but is not a Red Word`);
+    else if (S.trickyIntroLevel(t) > level) fail(`story "${st.title}"`, `Red Word "${t}" not taught until Level ${S.trickyIntroLevel(t)}`);
   }
-  // every tricky word on a page should be marked, so it shows blue
+  // every Red Word on a page should be marked, so it shows red
   for (const p of st.pages) {
     const marked = new Set((p.tricky || []).map((x) => x.toLowerCase()));
     for (const raw of p.text.split(/[\s.,!?“”"]+/)) {
       const w = raw.toLowerCase().replace(/[^a-z’'-]/g, "").replace(/[’']s$/, "").replace(/^[’']|[’']$/g, "");
-      if (w && S.isTrickyAt(w, level) && !marked.has(w)) fail(`story "${st.title}"`, `page "${p.text}" uses tricky word "${w}" without marking it`);
-      if (w && marked.has(w) && S.trickyIntroLevel(w) && !S.isTrickyAt(w, level)) fail(`story "${st.title}"`, `page "${p.text}" marks "${w}" tricky, but it is decodable by Level ${level} — unmark it`);
+      if (w && S.isTrickyAt(w, level) && !marked.has(w)) fail(`story "${st.title}"`, `page "${p.text}" uses Red Word "${w}" without marking it`);
+      if (w && marked.has(w) && S.trickyIntroLevel(w) && !S.isTrickyAt(w, level)) fail(`story "${st.title}"`, `page "${p.text}" marks "${w}" red, but it is decodable by Level ${level} — unmark it`);
     }
   }
   if (need !== st.level) fail(`story "${st.title}"`, `declares level ${st.level} but its words need Level ${need} — set level: ${need}`);
 }
 if (problems === storyIssues) ok(`stories: ${S.STORIES.length} books, every word readable at its band, declared levels correct`);
 
-/* 5. Tricky-part annotations cover every tricky word and spell it. */
+/* 5. Tricky-part annotations cover every Red Word and spell it. */
 let tpIssues = problems;
 for (const u of S.UNITS) for (const t of u.tricky) {
   const tp = S.TRICKY_PARTS[t];
@@ -123,7 +126,7 @@ for (const u of S.UNITS) for (const t of u.tricky) {
   if (spelled.toLowerCase() !== t.toLowerCase()) fail(`tricky "${t}"`, `parts spell "${spelled}"`);
   if (!tp.parts.some((p) => p[1])) fail(`tricky "${t}"`, "no part is marked as the tricky bit");
 }
-if (problems === tpIssues) ok("tricky words: every one annotated with its tricky part");
+if (problems === tpIssues) ok("Red Words: every one annotated with its tricky part");
 
 /* 6. Every bank word is readable at some level (no dead entries). */
 let dead = Object.entries(S.WORDS).filter(([, g]) => S.minLevelFor(g) === null);

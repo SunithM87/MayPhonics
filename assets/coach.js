@@ -56,7 +56,7 @@ function renderDirections(s, a) {
   host.appendChild(el("ul", {}, lines.map((l) => el("li", { html: l }))));
 }
 
-/* What to practise next: sounds and tricky words up to his level that were
+/* What to practise next: sounds and Red Words up to his level that were
  * marked ✗ (most recent first), then ones never tried at the current unit. */
 function renderPractise(s) {
   const host = document.getElementById("practise");
@@ -71,9 +71,13 @@ function renderPractise(s) {
   const got = items.filter((g) => verdictOf(kind, g) === "yes").length;
   if (!needs.length && !untried.length && !items.length) { host.hidden = true; return; }
   host.hidden = false;
-  const chip = (g) => el("button", { class: "pr-chip", text: gpcLabel(g),
+  // Set 2 and Set 3 reuse spellings (two oo's, two ow's), so a label that
+  // appears twice gets its first example word: "oo · moon", "oo · book".
+  const shown = needs.concat(untried).map(gpcLabel);
+  const chipText = (g) => kind === "tricky" || shown.filter((x) => x === gpcLabel(g)).length < 2 ? gpcLabel(g) : `${gpcLabel(g)} · ${(SOUND_WORDS[g] || [""])[0]}`;
+  const chip = (g) => el("button", { class: "pr-chip", text: chipText(g), title: kind === "tricky" ? "" : gpcNote(g),
     onclick: () => saveSub("fc", kind === "tricky" ? { tricky: g } : { sound: g, word: null }) });
-  host.appendChild(el("span", { class: "pr-label", text: `${got} of ${items.length} ${kind === "tricky" ? "tricky words" : "sounds"} marked ✓` }));
+  host.appendChild(el("span", { class: "pr-label", text: `${got} of ${items.length} ${kind === "tricky" ? "Red Words" : "Speed Sounds"} marked ✓` }));
   if (needs.length) host.appendChild(el("span", { class: "pr-group" }, [el("span", { class: "pr-title", text: "Needs another look:" }), ...needs.map(chip)]));
   if (untried.length) host.appendChild(el("span", { class: "pr-group" }, [el("span", { class: "pr-title", text: "Not tried yet this level:" }), ...untried.map(chip)]));
 }
@@ -81,7 +85,7 @@ function renderPractise(s) {
 function renderChips(s) {
   const u = unitData(s.level);
   document.getElementById("lc-level").textContent = s.level;
-  document.getElementById("lc-level-sub").textContent = `Phase ${u.phase} · ${u.label}`;
+  document.getElementById("lc-level-sub").textContent = u.set === u.label.slice(0, u.set.length) ? u.label : `${u.set} · ${u.label}`;
   const b = bandData(s.band);
   const tag = document.getElementById("lc-band");
   tag.textContent = b.label;
@@ -114,11 +118,11 @@ function setLevel(n) {
 function openLevelPicker() {
   const s = loadState();
   const body = el("div", { class: "levelopts" });
-  let lastPhase = null;
+  let lastSet = null;
   UNITS.forEach((u) => {
-    if (u.phase !== lastPhase) {
-      lastPhase = u.phase;
-      body.appendChild(el("div", { class: "levelgroup", text: `Phase ${u.phase}` }));
+    if (u.set !== lastSet) {
+      lastSet = u.set;
+      body.appendChild(el("div", { class: "levelgroup", text: u.set }));
     }
     body.appendChild(el("button", { class: "levelopt" + (s.level === u.n ? " active" : ""), onclick: () => { setLevel(u.n); closeModal(); } }, [
       el("span", { class: "lo-n", text: u.n }),
@@ -126,12 +130,12 @@ function openLevelPicker() {
         el("strong", { text: `${u.term} · ${u.label}` }),
         el("span", { class: "lo-sounds", text: u.sounds.length ? u.sounds.map(gpcLabel).join("  ") : u.note || "" }),
         u.sounds.length && u.note ? el("span", { class: "lo-blurb", text: u.note }) : null,
-        u.tricky.length ? el("span", { class: "lo-tricky", text: "Tricky: " + u.tricky.join(", ") }) : null,
+        u.tricky.length ? el("span", { class: "lo-tricky", text: "Red Words: " + u.tricky.join(", ") }) : null,
       ]),
     ]));
   });
   openModal("Activity Level", body,
-    "Drives flashcards and games. Each level is one of Little Wandle's own teaching units — a Reception week or a Year&nbsp;1 set — in the published order. Move it up whenever school does; move it down if he's finding a set hard.");
+    "Drives flashcards and games. The sounds come in Read Write Inc.'s own teaching order — Set&nbsp;1, Set&nbsp;2, Set&nbsp;3 — split into small steps so the tiles grow a few at a time. The steps and terms are a guide, not RWI's: schools regroup every half term. Move it up whenever school does; move it down if he's finding a set hard.");
 }
 
 function openBandPicker() {
@@ -141,14 +145,14 @@ function openBandPicker() {
     return el("button", { class: "levelopt" + (s.band === b.id ? " active" : ""), onclick: () => { saveState({ band: b.id, story: { id: null, page: 0, hl: null } }); closeModal(); } }, [
       el("span", { class: "lo-band", style: `background:${b.colour}` }),
       el("span", {}, [
-        el("strong", { text: `${b.label} · sounds up to Level ${b.level} · ${b.phase}` }),
+        el("strong", { text: `${b.label} · sounds up to Level ${b.level} · ${b.set}` }),
         el("span", { class: "lo-blurb", text: b.about }),
         el("span", { class: "lo-sounds", text: books.map((st) => `${st.title} (L${st.level})`).join(" · ") || "no books yet" }),
       ]),
     ]);
   }));
   openModal("Story Level", body,
-    "Each band's books use only sounds taught by the level shown, and every book card shows its own exact level. The colour names are the ones schools use, but they are <strong>not</strong> an official Little&nbsp;Wandle thing — Little Wandle and Collins label books by Phase and Set. Treat the colour as a rough guide and the level as the fact.");
+    "The colours are Read Write Inc.'s storybook colours, Red Ditty to Grey — the same ones as his RWI group at school. They are <strong>not</strong> the book-band colours other schemes use: RWI Pink and book-band Pink are different things. Each band's books here use only sounds taught by the level shown, and every card shows its exact level. These are this app's own books, written to fit each colour — not the RWI storybooks.");
 }
 
 function openStickers() {

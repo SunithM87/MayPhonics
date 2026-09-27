@@ -33,10 +33,13 @@ for (let level = 2; level <= S.MAX_LEVEL; level++) for (let seed = 0; seed < 15;
 }
 check("no repeated word within a board", dupes.length === 0, dupes[0]);
 
-/* 4. Games are gated honestly: Level 1 can't fill a board (and says so in the
- *    UI); every level from 2 can fill both 3 in a Row and Mystery Word. */
+/* 4. Games are gated honestly. With m a s d t, Level 1 already has just
+ *    enough words for 3 in a Row and Mystery Word; Word Sort and Word
+ *    Wheel need a second vowel, so they start at Level 2 (the UI says so).
+ *    From Level 2 every game must run. */
 const l1 = S.gameWords(1, 9, 0).length;
-check(`Level 1 has too few words for a board (${l1}) — UI shows a message instead`, l1 < 9);
+check(`Level 1 fills a 3 in a Row board (${l1} words) and Mystery Word`, l1 >= 9 && S.gameWords(1, 8, 5000, 3).length >= 4);
+check("Level 1 has no Word Sort or Word Wheel (the UI says they start at Level 2)", !S.sortsUpTo(1).length && !S.wheelsUpTo(1).length);
 let short = [];
 for (let level = 2; level <= S.MAX_LEVEL; level++) {
   if (S.gameWords(level, 9, 0).length < 9) short.push(`L${level} board`);

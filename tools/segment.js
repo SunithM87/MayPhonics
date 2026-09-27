@@ -8,14 +8,14 @@
  *
  * This is a HELPER, not an authority: the output is reviewed by a person and
  * pasted into words.js, which is the source of truth. It uses the FULL
- * grapheme inventory (every phase) with longest-match-first, so "train"
+ * grapheme inventory (every Set) with longest-match-first, so "train"
  * becomes t-r-ai-n rather than t-r-a-i-n. English being English, several
  * spellings have more than one sound; those are resolved by the explicit
  * lists below and flagged in the output so a reviewer looks at them.
  */
 
 const MULTI = [
-  "igh", "ear", "air", "ure",
+  "tious", "cious", "tion", "igh", "ear", "air", "are", "ire", "ure",
   "ai", "ee", "oa", "oo", "ar", "or", "ur", "ow", "oi", "er",
   "ay", "ou", "ie", "ea", "oy", "ir", "ue", "aw", "wh", "ph", "ew", "oe", "au", "ey",
   "ck", "ff", "ll", "ss", "zz", "qu", "ch", "sh", "th", "ng", "nk",
@@ -44,7 +44,8 @@ function segmentOne(word, known) {
   // split digraph: vowel + consonant(s) + final e  →  V-e, e.g. cake, shine, these
   let split = null;
   const m = letters.match(/^(.*?)([aeiou])([^aeiou]{1,2})e$/);
-  if (m && letters.length >= 3 && !["the", "she", "he", "me", "we", "be"].includes(letters)) {
+  // ...but not RWI's Set 3 are / ire / ure (care, fire, pure), which are one sound
+  if (m && letters.length >= 3 && !/(are|ire|ure)$/.test(letters) && !["the", "she", "he", "me", "we", "be"].includes(letters)) {
     split = { vowel: m[2], stem: m[1] + m[2] + m[3] };
     letters = split.stem;
   }
@@ -79,6 +80,8 @@ function segmentOne(word, known) {
     out.push(g);
     i += g.replace(/\(.*\)$/, "").replace("-e", "").length;
   }
+  // Set 3 "e: he" — the final e of he, she, me, we, be says /ee/
+  if (["he", "she", "me", "we", "be"].includes(w)) { out[out.length - 1] = "e(he)"; flags.push("e"); }
   if (suffixS) out.push("-s");
   return { gpcs: out, flags: [...new Set(flags)] };
 }
