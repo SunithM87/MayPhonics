@@ -15,7 +15,7 @@
 set -eu
 REPO="SunithM87/MayPhonics"
 BRANCH="${BRANCH:-claude/reading-den-app-migration-3torha}"
-PORT="${PORT:-8001}"
+PORT="${PORT:-8100}"
 NAME=reading-den-rwi
 DEFAULT_DATA="/volume2/appdata/Reading Den RWI/data"
 

@@ -1,6 +1,6 @@
 # The Reading Den (Read Write Inc. edition) on the UGREEN NAS.
 #
-# It is named reading-den-rwi, on port 8001, with its own data folder, so it
+# It is named reading-den-rwi, on port 8100, with its own data folder, so it
 # can run alongside the Little Wandle edition (reading-den, port 8000)
 # without the two touching each other.
 #
@@ -23,7 +23,7 @@ services:
     container_name: reading-den-rwi
     restart: unless-stopped
     ports:
-      - "8001:8000"
+      - "8100:8000"
     environment:
       - PORT=8000
       # Which branch to run. If you change it, change it in the URL below too.

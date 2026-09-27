@@ -84,7 +84,7 @@ For two *devices* (your laptop and his tablet), you need the sync server:
 ```
 cd server && npm install        # once — pulls one dependency, ws
 cd .. && PUBLIC_DIR="$PWD" STATE_FILE="$PWD/deploy/data/state.json" node server/server.js
-# then open http://<your-machine>:8000 on both devices (PORT=8001 to match the NAS)
+# then open http://<your-machine>:8000 on both devices (PORT=8100 to match the NAS)
 ```
 
 Or run it properly on a NAS — see below.
@@ -123,7 +123,7 @@ Nothing needs copying to the NAS. The only folder it uses is
 (`state.json`) plus the downloaded copy of the app.
 
 It is deliberately separate from the Little Wandle edition: the container
-is called **`reading-den-rwi`**, it listens on port **8001**, and it has its
+is called **`reading-den-rwi`**, it listens on port **8100**, and it has its
 own data folder, so the two never share progress or restart each other.
 
 1. **App Center → Docker → Install** (current DXP / DH4300 Plus models
@@ -131,7 +131,7 @@ own data folder, so the two never share progress or restart each other.
 2. **Docker → Project → Create.** Paste in the whole of
    [`deploy/docker-compose.yaml`](deploy/docker-compose.yaml) and deploy it.
    It uses the standard `node:20-alpine` image, so there's nothing to build.
-3. Open `http://<nas-ip>:8001` on any device in the house.
+3. Open `http://<nas-ip>:8100` on any device in the house.
 
 To keep the data somewhere else, change the one `source:` path in the
 compose file. It has to be an absolute path, because the UGREEN app keeps
@@ -165,7 +165,7 @@ reading-den-rwi → Restart* (or stop and start the project). As it starts it
 downloads the latest version from GitHub. Give it about ten seconds, then
 refresh both screens. His progress is never touched.
 
-To check which version is running, open `http://<nas-ip>:8001/api/health`.
+To check which version is running, open `http://<nas-ip>:8100/api/health`.
 The `version` field is the commit it's serving.
 
 From a terminal, this does the same restart and waits until the new
@@ -188,7 +188,7 @@ JavaScript regardless of the no-cache header.
 The app needs nothing special for this. Every URL it uses is relative to
 the page (the sync socket is built from `window.location`), and the server
 doesn't check the hostname, so it works the same whether you reach it as
-`192.168.1.170:8001`, a Tailscale `100.x.y.z:8001` address, or a MagicDNS
+`192.168.1.170:8100`, a Tailscale `100.x.y.z:8100` address, or a MagicDNS
 name. If it works at home and not away, the problem is the route to the
 NAS, not the app. Check these in order:
 
@@ -196,16 +196,16 @@ NAS, not the app. Check these in order:
    exists on your home Wi-Fi. Away from home, use the NAS's Tailscale IP
    (the `100.…` address in the Tailscale app or admin console, or
    `tailscale ip -4` on the NAS) or its MagicDNS name:
-   `http://100.x.y.z:8001`. The one exception: if the NAS advertises your
+   `http://100.x.y.z:8100`. The one exception: if the NAS advertises your
    home subnet as a Tailscale route *and* you've approved it in the admin
    console, the home IP works too.
 2. **Tailscale has to be on at both ends.** The phone or laptop needs the
    Tailscale VPN switched on (not just the app installed). The NAS needs to
    show as *Connected* in the admin console.
 3. **The NAS firewall.** If UGOS's firewall is on, it may only allow your
-   home subnet. Allow port 8001, or the Tailscale range `100.64.0.0/10`.
+   home subnet. Allow port 8100, or the Tailscale range `100.64.0.0/10`.
 4. **Test from the NAS itself** over SSH:
-   `curl -s http://$(tailscale ip -4):8001/api/health`. If that answers,
+   `curl -s http://$(tailscale ip -4):8100/api/health`. If that answers,
    the container and firewall are fine and the problem is on the device
    you're connecting from. If the `tailscale` command isn't found, Tailscale
    is running as a UGOS app or container rather than on the NAS itself. In
